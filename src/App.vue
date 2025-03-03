@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// const a = 0
 </script>
 
 <template>
@@ -6,6 +7,4 @@
   <el-button>I am ElButton</el-button>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

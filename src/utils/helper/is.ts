@@ -12,45 +12,45 @@
  * * * @function isNull: 检测给定的值是否为null
  */
 export function dataTypeCheck(value, type) {
-    return Object.prototype.toString.call(value) === `[object ${type}]`
+  return Object.prototype.toString.call(value) === `[object ${type}]`
 }
 
 export function isArray(value) {
-    return dataTypeCheck(value, 'Array')
+  return dataTypeCheck(value, 'Array')
 }
 
 export function isObject(value) {
-    return dataTypeCheck(value, 'Object')
+  return dataTypeCheck(value, 'Object')
 }
 
 export function isString(value) {
-    return dataTypeCheck(value, 'String')
+  return dataTypeCheck(value, 'String')
 }
 
 export function isNumber(value) {
-    return dataTypeCheck(value, 'Number')
+  return dataTypeCheck(value, 'Number')
 }
 
 export function isFunction(value) {
-    return dataTypeCheck(value, 'Function') || isAsyncFunction(value)
+  return dataTypeCheck(value, 'Function') || isAsyncFunction(value)
 }
 
 export function isAsyncFunction(value) {
-    return dataTypeCheck(value, 'AsyncFunction')
+  return dataTypeCheck(value, 'AsyncFunction')
 }
 
 export function isRegExp(value) {
-    return dataTypeCheck(value, 'RegExp')
+  return dataTypeCheck(value, 'RegExp')
 }
 
 export function isDef(value) {
-    return !dataTypeCheck(value, 'Undefined')
+  return !dataTypeCheck(value, 'Undefined')
 }
 
 export function isUnDef(value) {
-    return !isDef(value)
+  return !isDef(value)
 }
 
 export function isNull(value) {
-    return dataTypeCheck(value, 'Null')
+  return dataTypeCheck(value, 'Null')
 }
