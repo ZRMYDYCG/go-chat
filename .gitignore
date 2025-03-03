@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# 自动注册ElementPlus组件插件生成的文件
+auto-imports.d.ts
+components.d.ts
