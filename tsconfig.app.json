@@ -1,15 +1,21 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "extends": "@vue/tsconfig/tsconfig.dom.json", // 继承自 @vue/tsconfig 的 dom 配置
+
   "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo", // 指定 TypeScript 构建信息文件的路径
 
     /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
-    "noImplicitAny": false
+    "strict": true, // 启用所有严格类型检查选项
+    "noUnusedLocals": true, // 禁止未使用的局部变量
+    "noUnusedParameters": true, // 禁止未使用的参数
+    "noFallthroughCasesInSwitch": true, // 禁止 switch 语句中的穿透情况（即 case 语句没有 break）
+    "noUncheckedSideEffectImports": true, // 禁止导入具有副作用的模块而不进行类型检查
+    "noImplicitAny": false // 允许隐式的 any 类型
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
+
+  "baseUrl": ".", // 设置解析非相对模块名称的基本目录，默认为当前目录
+  "paths": {
+    "@/*": ["src/*"] // 定义模块名称到基于 baseUrl 的路径映射，这里将 @ 符号映射到 src 目录
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"] // 指定包含在编译过程中的文件，这里包括 src 目录下所有 .ts, .tsx 和 .vue 文件
 }
