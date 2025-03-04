@@ -1,6 +1,3 @@
-<!--
- * 列表组件
--->
 <template>
   <div class="gc-list">
     <div class="gc-list__wrapper">
@@ -8,7 +5,7 @@
         v-for="(item, index) in list"
         :key="index"
         href="javascript:void(0)"
-        class="gc-list__item is-active:text-[#26224e] is-active:bg-white is-active:shadow-[5px_15px_30px_0px_#f0f0f0] last:border-b-0 hover:bg-white hover:text-[#26224e] hover:shadow-[5px_15px_30px_0px_#f0f0f0]"
+        class="gc-list__item"
         :class="{
           'is-active': currentIndex === getObjectAttrValue(item, options.key),
         }"
@@ -30,7 +27,7 @@ import { get as getObjectAttrValue } from 'lodash'
 import { computed, nextTick, ref } from 'vue'
 
 export default {
-  name: 'GcList',
+  name: 'GCList',
   props: {
     list: {
       type: Array,
@@ -129,5 +126,25 @@ export default {
   },
 }
 </script>
+<style scoped>
+.gc-list .gc-list__item {
+  display: flex;
+  align-items: center;
+  padding: 15px 10px;
+  margin: 0 10px;
+  border-bottom: 1px solid #f7f7f7;
+  border-radius: 10px;
+  transition: background 0.3s;
+}
 
-<style scoped></style>
+.gc-list .gc-list__item:hover,
+.gc-list .gc-list__item.is-active {
+  color: #26224e;
+  background: #fff;
+  box-shadow: 5px 15px 30px 0px #f0f0f0;
+}
+
+.gc-list .gc-list__item:last-child {
+  border-bottom: 0;
+}
+</style>

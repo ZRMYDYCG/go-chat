@@ -6,11 +6,11 @@
       </div>
 
       <slot v-if="scrollbar" name="scroll-header"></slot>
-      <el-scrollbar v-if="scrollbar" ref="elScrollbar">
+      <ElScrollbar v-if="scrollbar" ref="elScrollbar">
         <div class="gc-column__body">
           <slot></slot>
         </div>
-      </el-scrollbar>
+      </ElScrollbar>
       <slot v-if="scrollbar" name="scroll-footer"></slot>
 
       <div v-if="!scrollbar" class="gc-column__body">
@@ -25,14 +25,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ElScrollbar } from 'element-plus'
 import { defineProps, ref, withDefaults } from 'vue'
 
 defineOptions({
   name: 'GcColumn',
 })
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     scrollbar: boolean
   }>(),
@@ -41,7 +40,7 @@ withDefaults(
   },
 )
 
-const elScrollbar = ref<InstanceType<typeof ElScrollbar> | null>(null)
+const elScrollbar = ref<any>()
 
 defineExpose({
   elScrollbar,
