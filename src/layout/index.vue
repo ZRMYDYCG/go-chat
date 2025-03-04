@@ -3,9 +3,14 @@ import LayoutThemes from './themes/default/index.vue'
 </script>
 
 <template>
-  <div>
+  <div class="gc-container">
     <LayoutThemes />
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.gc-container {
+  width: 100%;
+  height: 100%;
+}
+</style>
