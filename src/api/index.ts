@@ -1,5 +1,5 @@
 const api = {}
-const apiFiles = import.meta.glob('./modules/*.js', { eager: true })
+const apiFiles = import.meta.glob('./modules/*.ts', { eager: true })
 
 Object.entries(apiFiles).forEach(([path, module]) => {
   const fileName = (path.match(/\/(\w+)\./) as RegExpMatchArray)[1]

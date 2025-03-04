@@ -5,7 +5,7 @@
 
 import type { App, Plugin } from 'vue'
 
-const modules: Record<string, { default: Plugin }> = import.meta.glob('./modules/*.js', {
+const modules: Record<string, { default: Plugin }> = import.meta.glob('./modules/*.ts', {
   eager: true,
 })
 

@@ -9,7 +9,7 @@ const utilsPlugin = {
 
     // date
     app.config.globalProperties.$date = data
-    app.provide('$date', data)
+    app.provide('$data', data)
   },
 }
 

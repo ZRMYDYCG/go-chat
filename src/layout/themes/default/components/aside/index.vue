@@ -7,7 +7,7 @@ import GcUser from '../user/index.vue'
 
 <template>
   <div class="gc-aside fixed top-0 left-0 h-full w-[245px] border-r border-gray-200">
-    <GcColumn>
+    <GcColumn :scrollbar="false">
       <template #header>
         <GcLogo></GcLogo>
       </template>

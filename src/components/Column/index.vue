@@ -37,7 +37,7 @@ withDefaults(
     scrollbar: boolean
   }>(),
   {
-    scrollbar: false,
+    scrollbar: true,
   },
 )
 

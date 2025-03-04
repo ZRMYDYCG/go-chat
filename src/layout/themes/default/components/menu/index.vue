@@ -1,9 +1,15 @@
 <template>
-  <div class="gc-navigator-menu">
+  <div class="gc-navigator-menu h-[calc(100vh-200px)] pt-[40px] pl-[30px]">
     <div class="menu-list">
-      <router-link v-for="menu in menus" :key="menu.path" :to="menu.path" active-class="active" class="menu-item">
-        <i v-if="route.path !== menu.path" :class="menu.meta.icon"></i>
-        <i v-else :class="menu.meta.activeIcon"></i>
+      <router-link
+        v-for="menu in menus"
+        :key="menu.path"
+        :to="menu.path"
+        active-class="active"
+        class="menu-item mb-[10px] block h-[40px] w-[160px] rounded-[10px] px-[20px] leading-[40px] text-[#38393e] transition-all duration-300 ease-in-out"
+      >
+        <i v-if="route.path !== menu.path" :class="menu.meta.icon" class="mr-[15px] text-[22px]"></i>
+        <i v-else :class="menu.meta.activeIcon" class="mr-[15px] text-[22px]"></i>
         <span>{{ menu.meta.title }}</span>
       </router-link>
     </div>
@@ -30,34 +36,10 @@ const menus = computed(() => {
 </script>
 
 <style scoped>
-.gc-navigator-menu {
-  height: calc(100vh - 200px);
-  padding-left: 30px;
-  padding-top: 40px;
-  .menu-list {
-    .menu-item {
-      display: block;
-      width: 160px;
-      height: 40px;
-      line-height: 40px;
-      color: #38393e;
-      padding: 0 20px;
-      margin-bottom: 10px;
-      border-radius: 10px;
-      transition: all 0.3s ease;
-
-      i {
-        font-size: 22px;
-        margin-right: 15px;
-      }
-
-      &.active,
-      &:hover {
-        background-color: #fff;
-        box-shadow: 0 6px 6px 1px #eceff4;
-        color: $theme-color;
-      }
-    }
-  }
+.menu-item.active,
+.menu-item:hover {
+  background-color: #fff;
+  box-shadow: 0 6px 6px 1px #eceff4;
+  color: #3246d1;
 }
 </style>

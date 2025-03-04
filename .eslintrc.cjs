@@ -25,6 +25,8 @@ module.exports = {
   rules: {
     'vue/multi-word-component-names': 'off', // 禁用vue文件强制多个单词命名
     '@typescript-eslint/no-explicit-any': 'off', //允许使用any
+    'no-unused-vars': 'off', // 禁用未使用变量的检查
+    '@typescript-eslint/no-unused-vars': 'off', // 禁用 TypeScript 中未使用变量的检查
     '@typescript-eslint/no-this-alias': [
       'error',
       {

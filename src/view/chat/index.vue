@@ -1,7 +1,11 @@
-<script lang="ts"></script>
+<script lang="ts" setup>
+import ChatHistory from './components/chat-history.vue'
+</script>
 
 <template>
-  <div></div>
+  <div class="chat flex">
+    <ChatHistory />
+  </div>
 </template>
 
 <style scoped></style>
