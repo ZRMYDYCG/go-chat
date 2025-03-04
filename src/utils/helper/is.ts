@@ -1,5 +1,5 @@
 /*
- * @description - 数据类型检测工具
+ * 数据类型检测工具汇总
  * * * @function isArray: 检测给定的值是否为数组
  * * * @function isObject: 检测给定的值是否为对象（注意：在JavaScript中，数组和null也会被认为是对象）
  * * * @function isString: 检测给定的值是否为字符串
@@ -11,6 +11,7 @@
  * * * @function isUnDef: 检测给定的值是否未定义（即为undefined）
  * * * @function isNull: 检测给定的值是否为null
  */
+
 export function dataTypeCheck(value, type) {
   return Object.prototype.toString.call(value) === `[object ${type}]`
 }
