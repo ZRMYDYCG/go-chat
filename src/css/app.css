@@ -1,0 +1,38 @@
+/* 根元素相关样式表 */
+html body::-webkit-scrollbar,
+#app::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+html body::-webkit-scrollbar-thumb,
+#app::-webkit-scrollbar-thumb {
+    background-color: #eaeaeb;
+    border: 3px solid transparent;
+    border-radius: 7px;
+}
+
+html body::-webkit-scrollbar-thumb:hover,
+#app::-webkit-scrollbar-thumb:hover {
+    background-color: #d4d5d6;
+}
+
+body {
+    height: 100vh;
+    background-color: #f7faff;
+}
+
+#app {
+    width: 100vw;
+    height: 100vh;
+}
+
+/* 包裹容器样式表 */
+.page-wrapper {
+    padding: 0 15px;
+}
+
+/* ElementPlus样式覆盖表 */
+.el-scrollbar .el-scrollbar__bar.is-vertical {
+    width: 8px;
+}
