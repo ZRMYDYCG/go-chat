@@ -2,6 +2,7 @@
 import GcColumn from '@/components/Column/index.vue'
 import GcLogo from '../logo/index.vue'
 import GcMenu from '../menu/index.vue'
+import GcUser from '../user/index.vue'
 </script>
 
 <template>
@@ -10,10 +11,17 @@ import GcMenu from '../menu/index.vue'
       <template #header>
         <GcLogo></GcLogo>
       </template>
-
-      <GcMenu />
-
-      <template #footer> sfsd</template>
+      <template #default>
+        <GcMenu />
+      </template>
+      <template #footer>
+        <GcUser />
+        <img
+          src="https://raw.githubusercontent.com/mayhemantt/mayhemantt/Update/svg/Bottom.svg"
+          class="absolute -bottom-[4px]"
+          alt="#"
+        />
+      </template>
     </GcColumn>
   </div>
 </template>
@@ -31,7 +39,6 @@ import GcMenu from '../menu/index.vue'
   display: flex;
   align-items: center;
   height: 95px;
-  padding-left: 30px;
   border-top: 1px solid #e2e8f0;
 }
 </style>

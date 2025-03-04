@@ -28,7 +28,7 @@ export const loginRoutes = {
 }
 
 // 注册页路由
-export const registRoutes = {
+export const registerRoutes = {
   path: '/register',
   name: 'Register',
   component: () => import('@/view/register/index.vue'),
@@ -48,6 +48,6 @@ export const notFoundRoutes = [
   },
 ]
 
-const basicRoutes = [rootRoute, loginRoutes, registRoutes, ...notFoundRoutes]
+const basicRoutes = [rootRoute, loginRoutes, registerRoutes, ...notFoundRoutes]
 
 export default basicRoutes
