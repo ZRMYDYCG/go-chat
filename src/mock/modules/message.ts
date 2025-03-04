@@ -2,18 +2,7 @@ import useChatStore from '@/store/modules/chat'
 import { formatDate } from '@/utils/helper/data'
 import { mock, Random } from 'mockjs'
 import querystring from 'querystring'
-
-interface IMessageListVo {
-  id: number
-  user_id: number
-  content: string
-  receiver_id: number
-  avatar: string
-  is_me: boolean
-  status: number
-  send_time: string
-  create_time: string
-}
+import type { IMessageListVo } from '../types/message/message.vo.ts'
 
 const messageMock = () => {
   // 列表模拟接口
