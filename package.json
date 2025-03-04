@@ -24,9 +24,9 @@
       "prettier --write"
     ]
   },
-  "config":{
-    "commitizen":{
-      "path":"node_modules/cz-conventional-changelog"
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-conventional-changelog"
     }
   },
   "dependencies": {
@@ -47,6 +47,7 @@
   "devDependencies": {
     "@commitlint/cli": "19.2.0",
     "@commitlint/config-conventional": "19.1.0",
+    "@types/mockjs": "^1.0.10",
     "@types/node": "^22.13.8",
     "@typescript-eslint/eslint-plugin": "^6.19.0",
     "@typescript-eslint/parser": "^6.19.0",
