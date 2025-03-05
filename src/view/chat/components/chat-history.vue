@@ -1,4 +1,56 @@
+<template>
+  <div class="chat-history h-screen w-[300px]">
+    <GcColumn ref="gcColumnRef">
+      <template #header>
+        <div class="search">
+          <el-input v-model="searchFormMdl.keywords" placeholder="搜索" clearable>
+            <template #prefix>
+              <i class="ri-search-line"></i>
+            </template>
+          </el-input>
+        </div>
+      </template>
+
+      <template #scroll-header>
+        <div class="list-title">聊天记录</div>
+      </template>
+      <GcList
+        ref="chatListRef"
+        :list="chatList"
+        :options="{
+          key: 'user_id',
+        }"
+        @change="handleChangeChatListItem"
+      >
+        <template #default="{ item }">
+          <div class="chat-item flex w-[100%]">
+            <div class="user flex w-[100%] items-center">
+              <div class="avater">
+                <img :src="item.avatar" alt="" />
+              </div>
+              <div class="info">
+                <div class="info-top flex items-center justify-between">
+                  <p class="nickname">{{ item.nickname }}</p>
+                  <span class="date">{{ $date.formatDate(item.send_time, 'HH:mm') }}</span>
+                </div>
+
+                <div class="info-bottom flex">
+                  <p class="last-message truncate">
+                    {{ item.last_message }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </GcList>
+    </GcColumn>
+  </div>
+</template>
+
 <script setup lang="ts">
+import GcColumn from '@/components/Column/index.vue'
+import GcList from '@/components/List/index.vue'
 import { useCurrentInstance, useLoadMore, usePageList } from '@/hooks'
 import useChatStore from '@/store/modules/chat'
 import { debounce } from 'lodash-es'
@@ -27,7 +79,7 @@ const chatListRef = ref<any>(null)
 
 const {
   list: chatList,
-  loadding,
+  loading, // 这里应该是 loading 而不是 loadding
   getPageList,
 } = usePageList<ChatItem>({
   getPageListApi: $api.chat.getChatHistoryList,
