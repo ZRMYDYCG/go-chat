@@ -1,7 +1,7 @@
 <template>
   <div class="regist">
     <el-form
-      ref="registFormRef"
+      ref="registerFormRef"
       :model="formMdl"
       :rules="rules"
       label-position="left"
@@ -69,7 +69,7 @@ const rules = {
 const router = useRouter()
 const userStore = useUserStore()
 
-const registFormRef = ref<InstanceType<typeof ElForm>>()
+const registerFormRef = ref<InstanceType<typeof ElForm>>()
 const loading = ref(false)
 const formMdl = reactive<any>({
   account: '',
@@ -79,14 +79,14 @@ const formMdl = reactive<any>({
 const handleRegister = async () => {
   if (loading.value) return
 
-  const valid = await registFormRef.value?.validate().catch(() => false)
+  const valid = await registerFormRef.value?.validate().catch(() => false)
   if (!valid) return
 
   loading.value = true
   try {
     await userStore.accountRegister(formMdl)
     ElMessage.success({ message: '注册成功', duration: 3000 })
-    router.push('/login')
+    await router.push('/login')
   } catch (error: any) {
     ElMessage.error({ message: error?.message || '注册失败', duration: 3000 })
   } finally {

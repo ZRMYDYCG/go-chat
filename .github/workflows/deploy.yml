@@ -3,7 +3,7 @@ name: Deploy to Remote Server
 on:
   push:
     branches:
-      - master  # 触发条件，可以根据需要修改
+      - master
 
 jobs:
   deploy:
@@ -19,6 +19,7 @@ jobs:
           script: |
             set -e  # 如果任何命令失败，立即退出
             cd ~/lightChat/web  # 进入项目目录
+            git clone git@github.com:ZRMYDYCG/llm-go-chat-client.git  # 克隆项目到服务器
             git pull  # 拉取最新代码
             sudo docker compose down --rmi all  # 停止并删除所有容器
             sudo docker compose up -d  # 构建并启动容器
