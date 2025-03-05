@@ -43,35 +43,17 @@
       </el-form-item>
     </el-form>
   </div>
-
-  <div :class="{ 'dark-mode': myColorMode === 'dark', 'light-mode': myColorMode === 'light' }">
-    <!-- 页面内容 -->
-    <button @click="changeTheme('dark')">切换到深色模式</button>
-    <button @click="changeTheme('light')">切换到浅色模式</button>
-    <button @click="changeTheme('auto')">跟随系统</button>
-  </div>
 </template>
 
 <script setup lang="ts">
 import { useUserStore } from '@/store/modules/user'
 import { Unlock as IconUnlock, User as IconUser } from '@element-plus/icons-vue'
-import { useColorMode } from '@vueuse/core'
 import { ElMessage, type FormInstance } from 'element-plus'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const userStore = useUserStore()
 const router = useRouter()
-
-const { system, store } = useColorMode()
-
-const myColorMode = computed(() => (store.value === 'auto' ? system.value : store.value))
-
-// 切换颜色模式的函数
-const changeTheme = (val) => {
-  // console.log(val)
-  store.value = val
-}
 
 const rules = {
   account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
