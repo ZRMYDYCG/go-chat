@@ -1,35 +1,60 @@
+import $api from '@/api'
+import { HTTP_CODE, HTTP_HOST } from '@/settings/config/http'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-const useUserStore = defineStore('userStore', () => {
-  const token = ref('has-token')
-  const userInfo = ref<{
-    nickname: string
-    avatar: string
-    account: string
-  }>()
+interface UserInfo {
+  avatar: string
+  [key: string]: any
+}
 
-  const updateUserInfo = (user) => {
+export const useUserStore = defineStore('userStore', () => {
+  const userInfo = ref<UserInfo | null>(null)
+  const updateUserInfo = (user: UserInfo) => {
     userInfo.value = user
+
+    // 数据持久化
     localStorage.setItem('user', JSON.stringify(user))
   }
 
-  const updateToken = (token) => {
-    token.value = token
-    localStorage.setItem('token', JSON.stringify(token))
+  const token = ref<string>('')
+  const updateToken = (value: string) => {
+    token.value = value
+
+    // 数据持久化
+    localStorage.setItem('token', value)
   }
 
-  const loginAction = () => {
-    return new Promise(() => {})
+  // 登录action
+  const accountLogin = (data: { account: string; password: string }) => {
+    return new Promise<void>((resolve, reject) => {
+      ;($api as any).login
+        .accountLogin(data)
+        .then((res) => {
+          const { code, data, message } = res.data
+          if (code === HTTP_CODE.HTTP_SUCCESS_CODE) {
+            const { avatar, ...extra } = data.info
+            updateUserInfo({
+              avatar: `${HTTP_HOST}${avatar}`,
+              ...extra,
+            })
+            updateToken(data.token)
+            resolve()
+          } else {
+            reject(message)
+          }
+        })
+        .catch(() => {
+          reject('登录失败')
+        })
+    })
   }
 
   return {
-    token,
     userInfo,
     updateUserInfo,
+    token,
     updateToken,
-    loginAction,
+    accountLogin,
   }
 })
-
-export default useUserStore

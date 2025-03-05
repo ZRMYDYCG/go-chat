@@ -1,5 +1,5 @@
 import { HTTP_TIMEOUT } from '@/settings/config/http'
-import useUserStore from '@/store/modules/user'
+import { useUserStore } from '@/store/modules/user'
 import axios from 'axios'
 
 // 创建http axios实例
