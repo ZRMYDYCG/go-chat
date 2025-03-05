@@ -124,56 +124,5 @@ const handleChangeContactListItem = (contactId: string | number, contact: Contac
 </template>
 
 <style scoped>
-.contact-list {
-  width: 300px;
-  height: 100vh;
-  border-right: 1px solid #e0e4ea;
-}
-
-.contact-list .gc-column ::v-deep .gc-column__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 70px;
-  padding: 15px;
-  border-bottom: 1px solid #e0e4ea;
-}
-
-.contact-list .gc-column .gc-column__header .oprate .el-button + .el-button {
-  margin-left: 5px;
-}
-
-.contact-list .gc-column .list-title {
-  font-size: 14px;
-  color: #96a1b1;
-  line-height: 45px;
-  padding-left: 15px;
-  margin-bottom: 5px;
-}
-
-.contact-list .gc-column ::v-deep .el-scrollbar .gc-list {
-  padding-bottom: 30px;
-}
-
-.contact-list .gc-column ::v-deep .el-scrollbar .gc-list .gc-list__item .contact-item .user .avater {
-  flex-shrink: 0;
-  width: 45px;
-  height: 45px;
-  margin-right: 15px;
-}
-
-.contact-list .gc-column ::v-deep .el-scrollbar .gc-list .gc-list__item .contact-item .user .avater img {
-  border-radius: 50%;
-}
-
-.contact-list .gc-column ::v-deep .el-scrollbar .gc-list .gc-list__item .contact-item .user .info {
-  flex: 1;
-}
-
-.contact-list .gc-column ::v-deep .el-scrollbar .gc-list .gc-list__item .contact-item .user .info-top .nickname {
-  flex: 1;
-  width: 0;
-  font-size: 15px;
-  font-weight: 600;
-}
+@import './contact-list.css';
 </style>

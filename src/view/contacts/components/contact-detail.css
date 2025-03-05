@@ -1,0 +1,59 @@
+.contact-detail {
+    flex: 1;
+    height: 850px;
+}
+
+.contact-detail .contact-detail-wrapper {
+    width: 400px;
+    margin: 0 auto;
+}
+
+.contact-detail .contact-detail-wrapper .base-info {
+    padding: 100px 0 45px;
+    border-bottom: 1px solid #e7e7e7;
+}
+
+.contact-detail .contact-detail-wrapper .base-info .left {
+    margin-right: 30px;
+}
+
+.contact-detail .contact-detail-wrapper .base-info .left .nickname {
+    font-size: 18px;
+}
+
+.contact-detail .contact-detail-wrapper .base-info .left .nickname .sex {
+    width: 18px;
+    margin-left: 5px;
+}
+
+.contact-detail .contact-detail-wrapper .base-info .left .desc {
+    font-size: 14px;
+    color: #96a1b1;
+    word-break: break-all;
+    margin-top: 5px;
+}
+
+.contact-detail .contact-detail-wrapper .base-info .right .avater {
+    flex-shrink: 0;
+    width: 45px;
+    height: 45px;
+}
+
+.contact-detail .contact-detail-wrapper .base-info .right .avater img {
+    border-radius: 50%;
+}
+
+.contact-detail .contact-detail-wrapper .other-info {
+    padding: 40px 0 30px;
+    border-bottom: 1px solid #e7e7e7;
+}
+
+.contact-detail .contact-detail-wrapper .other-info .info-row .lable {
+    width: 5em;
+    color: #96a1b1;
+    margin-right: 30px;
+}
+
+.contact-detail .contact-detail-wrapper .oprate {
+    margin-top: 60px;
+}
