@@ -20,4 +20,4 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            echo "ssh 连接成功"
+            echo "ssh 连接成功!"
