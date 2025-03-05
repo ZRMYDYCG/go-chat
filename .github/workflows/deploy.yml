@@ -1,0 +1,23 @@
+name: TEST SSH
+
+on:
+  push:
+    branches:
+      - master  # 触发条件，可以根据需要修改
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2  # 检出代码，包括 deploy.sh 文件
+
+      - name: Deploy to Remote Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "ssh 连接成功"
