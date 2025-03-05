@@ -1,4 +1,4 @@
-name: TEST SSH
+name: Deploy to Remote Server
 
 on:
   push:
@@ -10,9 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2  # 检出代码，包括 deploy.sh 文件
-
       - name: Deploy to Remote Server
         uses: appleboy/ssh-action@master
         with:
@@ -20,4 +17,8 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            echo "ssh 连接成功!"
+            set -e  # 如果任何命令失败，立即退出
+            cd ~/lightChat/web  # 进入项目目录
+            git pull  # 拉取最新代码
+            sudo docker compose down --rmi all  # 停止并删除所有容器
+            sudo docker compose up -d  # 构建并启动容器
