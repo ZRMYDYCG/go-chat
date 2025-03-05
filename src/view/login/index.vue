@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import useUserStore from '@/store/modules/user'
+import { useUserStore } from '@/store/modules/user'
 import { Unlock as IconUnlock, User as IconUser } from '@element-plus/icons-vue'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { ref } from 'vue'
