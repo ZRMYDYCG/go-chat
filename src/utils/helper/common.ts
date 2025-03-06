@@ -8,5 +8,5 @@ export const formatServerFilePath = (src) => {
   if (!src) {
     return ''
   }
-  return /^https*:\/\//.test(src) ? src : `${HTTP_HOST}${src}`
+  return /^https*:\/\//.test(src) ? src : `${HTTP_HOST}upload/avatar/${src}`
 }

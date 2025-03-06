@@ -1,7 +1,7 @@
 <template>
   <div class="chat-item" :class="{ 'chat-item--me': isMe }">
     <div v-if="showDate" class="date">
-      <span>{{ $date.formatDate(message.send_time, 'HH:mm') }}</span>
+      <span>{{ $dataHelpers.formatDate(message.send_time, 'HH:mm') }}</span>
     </div>
 
     <div class="chat-data" :class="{ 'flex justify-end': isMe }">

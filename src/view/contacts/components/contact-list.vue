@@ -149,9 +149,7 @@ defineExpose({
             </div>
             <div class="oprate" @click.stop>
               <el-dropdown :teleported="false" placement="top" @command="handleOparete($event, item)">
-                <el-button link>
-                  <i class="ri-more-fill"></i>
-                </el-button>
+                <el-button link> 删除 </el-button>
                 <template #dropdown>
                   <el-dropdown-menu>
                     <el-dropdown-item command="delete">删除</el-dropdown-item>

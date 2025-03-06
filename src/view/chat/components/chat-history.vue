@@ -31,7 +31,7 @@
               <div class="info">
                 <div class="info-top flex items-center justify-between">
                   <p class="remark truncate">{{ item.remark }}</p>
-                  <span class="date">{{ $date.formatDate(item.send_time, 'HH:mm') }}</span>
+                  <span class="date">{{ $dataHelpers.formatDate(item.send_time, 'HH:mm') }}</span>
                 </div>
 
                 <div class="info-bottom flex">

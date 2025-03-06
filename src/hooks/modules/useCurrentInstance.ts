@@ -13,7 +13,7 @@ interface CustomProperties {
   $HTTP_CODE: any
   $dict: any
   $is: any
-  $date: any
+  $dataHelpers: any
   $common: any
 }
 
@@ -29,9 +29,7 @@ export const useCurrentInstance = () => {
 
   const { proxy } = currentInstance as ComponentInternalInstance & { proxy: ComponentPublicInstance & CustomProperties }
 
-  const { $api, $HTTP, $HTTP_CODE, $dict, $is, $date, $common } = proxy
-
-  // console.log('useCurrentInstance', currentInstance, proxy, $api, $HTTP, $HTTP_CODE, $dict, $is, $date)
+  const { $api, $HTTP, $HTTP_CODE, $dict, $is, $dataHelpers, $common } = proxy
 
   return {
     router,
@@ -43,7 +41,7 @@ export const useCurrentInstance = () => {
     $HTTP_CODE,
     $dict,
     $is,
-    $date,
+    $dataHelpers,
     $common,
   }
 }
