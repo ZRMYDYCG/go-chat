@@ -4,7 +4,7 @@
       <template #header>
         <div v-if="chatStore.activeChat" class="user flex w-[100%]">
           <div class="avater">
-            <img :src="chatStore.activeChat.avatar" alt="" />
+            <img :src="chatStore.activeChat.avater" alt="" />
           </div>
           <div class="info flex flex-col justify-center">
             <div class="info-top flex items-center justify-between">
@@ -29,7 +29,6 @@
             class="input"
             :contenteditable="Boolean(chatStore.activeChat)"
             placeholder="输入聊天内容..."
-            @keydown="handleKeyDown"
           ></div>
 
           <div class="chat-oprate">
@@ -39,7 +38,7 @@
             <a href="javascript:void(0)">
               <i class="ri-landscape-line"></i>
             </a>
-            <a href="javascript:void(0)">
+            <a href="javascript:void(0)" @click="handleSendMessage">
               <i class="ri-send-plane-line"></i>
             </a>
           </div>
@@ -51,16 +50,33 @@
 
 <script setup lang="ts">
 import GcColumn from '@/components/Column/index.vue'
-import { useCurrentInstance, useLoadMore, usePageList } from '@/hooks'
+import { useCurrentInstance, useLoadMore, usePageList, useSocket } from '@/hooks'
 import useChatStore from '@/store/modules/chat'
 import { formatDate } from '@/utils/helper/data'
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import ChatItem from './chat-item.vue'
 
+interface MessageItem {
+  id: string
+  chat_id: string
+  user_id: string
+  content: string
+  reciver_id: string
+  send_time: string
+  type: string
+  is_me: boolean
+}
+
+const emit = defineEmits<{
+  (e: 'send-message', item: MessageItem): void
+}>()
+
 const { $api } = useCurrentInstance()
 const chatStore = useChatStore()
+const { socket } = useSocket()
 
 const searchFormMdl = ref({
+  reciver_id: chatStore.activeChat?.reciver_id || '',
   keywords: '',
 })
 
@@ -70,33 +86,33 @@ const {
   loadding,
   refreshPageList,
   loadMore,
-} = usePageList({
+} = usePageList<MessageItem>({
   getPageListApi: $api.message.getChatMessageList,
   searchParams: searchFormMdl,
   dataAppend: 'start',
 })
 
-const gcColumnRef = ref<InstanceType<typeof GcColumn>>()
-const inputRef = ref<HTMLDivElement>()
-
 const scrollToBottom = () => {
   nextTick(() => {
     const container = gcColumnRef.value?.elScrollbar.wrapRef
-    if (container) {
-      const scrollHeight = container.scrollHeight
-      const clientHeight = container.clientHeight
-      gcColumnRef.value?.elScrollbar.scrollTo({
-        top: scrollHeight - clientHeight,
-      })
-    }
+    const scrollHeight = container.scrollHeight
+    const clientHeight = container.clientHeight
+    gcColumnRef.value?.elScrollbar.scrollTo({
+      top: scrollHeight - clientHeight,
+    })
   })
 }
 
+const gcColumnRef = ref(null)
+
 watch(
-  () => chatStore.activeChat?.user_id,
+  () => chatStore.activeChat?.reciver_id,
   async () => {
-    await refreshPageList()
-    scrollToBottom()
+    if (chatStore.activeChat) {
+      searchFormMdl.value.reciver_id = chatStore.activeChat.reciver_id
+      await refreshPageList()
+      scrollToBottom()
+    }
   },
   {
     immediate: true,
@@ -109,53 +125,67 @@ onMounted(() => {
     type: 'top',
     scrollTopCallback: async () => {
       const container = gcColumnRef.value?.elScrollbar.wrapRef
-      if (container) {
-        // 加载更多前的scrollHeight
-        const scrollHeightBefore = container.scrollHeight
 
-        await loadMore()
+      // 加载更多前的scrollHeight
+      const scrollHeightBefore = container.scrollHeight
 
-        nextTick(() => {
-          const scrollHeightAfter = container.scrollHeight
+      await loadMore()
 
-          // 维持原有滚动位置需要滚动的距离
-          const needScrollDistance = scrollHeightAfter - scrollHeightBefore
-          gcColumnRef.value?.elScrollbar.scrollTo({
-            top: needScrollDistance,
-          })
+      nextTick(() => {
+        const scrollHeightAfter = container.scrollHeight
+
+        // 维持原有滚动位置需要滚动的距离
+        const needScrollDistance = scrollHeightAfter - scrollHeightBefore
+        gcColumnRef.value?.elScrollbar.scrollTo({
+          top: needScrollDistance,
         })
-      }
+      })
     },
     container: gcColumnRef.value?.elScrollbar.wrapRef,
-    distance: 150,
+    distance: 0,
   })
 })
 
-const sendMessage = (message: string) => {
-  const item = {
-    id: 'id',
-    user_id: 'user_id',
-    nickname: 'nickname',
-    message,
-    reciver_id: chatStore.activeChat.user_id,
-    avater: chatStore.activeChat.avater,
-    is_me: true,
-    read: 0,
+// 聊天输入框
+const inputRef = ref<HTMLDivElement | null>(null)
+
+const sendMessage = async (message: string) => {
+  if (message === '') {
+    return false
+  }
+  const item: MessageItem = {
+    id: Date.now().toString(), // 生成一个唯一ID
+    chat_id: chatStore.activeChat?.id || '',
+    user_id: chatStore.activeChat?.user_id || '',
+    content: message,
+    reciver_id: chatStore.activeChat?.reciver_id || '',
     send_time: formatDate(new Date()),
-    create_time: 'create_time',
+    type: '0',
+    is_me: true,
   }
   messageList.value.push(item)
+
+  // socket发送消息到服务器
+  socket.emit('chat-1v1-to-server', item)
+
+  emit('send-message', item)
 }
+
+// 接收socket消息来信
+socket.on('chat-1v1-to-client', (message: MessageItem) => {
+  messageList.value.push(message)
+  scrollToBottom()
+})
 
 const handleKeyDown = (e: KeyboardEvent) => {
   if (e.key === 'Enter') {
     e.preventDefault()
 
     // 执行发送聊天消息
-    const target = e.target as HTMLDivElement
-    sendMessage(target.innerHTML)
-    scrollToBottom()
-    // console.log('执行发送聊天消息', target.innerHTML)
+    sendMessage((e.target as HTMLDivElement).innerHTML).then(() => {
+      scrollToBottom()
+      ;(e.target as HTMLDivElement).innerHTML = ''
+    })
   }
 }
 
@@ -170,15 +200,25 @@ onBeforeUnmount(() => {
     inputRef.value.removeEventListener('keydown', handleKeyDown)
   }
 })
+
+const handleSendMessage = () => {
+  if (inputRef.value) {
+    // 执行发送聊天消息
+    sendMessage(inputRef.value.innerHTML).then(() => {
+      scrollToBottom()
+      inputRef.value!.innerHTML = ''
+    })
+  }
+}
 </script>
 
 <style scoped>
 .chatting {
   flex: 1;
-  height: 100vh;
+  height: 850px;
 }
 
-.chatting .gc-column :deep(.gc-column__header) {
+.chatting :deep(.gc-column__header) {
   display: flex;
   align-items: center;
   height: 70px;
@@ -186,45 +226,45 @@ onBeforeUnmount(() => {
   border-bottom: 1px solid #e0e4ea;
 }
 
-.chatting .gc-column :deep(.gc-column__header .user .avater) {
+.chatting :deep(.gc-column__header .user .avater) {
   width: 45px;
   height: 45px;
   margin-right: 15px;
 }
 
-.chatting .gc-column :deep(.gc-column__header .user .avater img) {
+.chatting :deep(.gc-column__header .user .avater img) {
   border-radius: 50%;
 }
 
-.chatting .gc-column :deep(.gc-column__header .user .info) {
+.chatting :deep(.gc-column__header .user .info) {
   flex: 1;
 }
 
-.chatting .gc-column :deep(.gc-column__header .user .info-top .nickname) {
+.chatting :deep(.gc-column__header .user .info-top .nickname) {
   font-size: 15px;
   font-weight: 600;
 }
 
-.chatting .gc-column :deep(.gc-column__header .user .info-bottom) {
+.chatting :deep(.gc-column__header .user .info-bottom) {
   font-size: 12px;
   color: #96a1b1;
 }
 
-.chatting .gc-column :deep(.el-scrollbar .chat-list) {
+.chatting :deep(.el-scrollbar .chat-list) {
   padding: 30px 15px;
 }
 
-.chatting .gc-column :deep(.gc-column__footer) {
+.chatting :deep(.gc-column__footer) {
   padding: 15px;
 }
 
-.chatting .gc-column :deep(.gc-column__footer .chat-input) {
+.chatting :deep(.gc-column__footer .chat-input) {
   padding: 15px;
   background-color: #edeff0;
   border-radius: 15px;
 }
 
-.chatting .gc-column :deep(.gc-column__footer .chat-input .input) {
+.chatting :deep(.gc-column__footer .chat-input .input) {
   max-width: 500px;
   height: 31px;
   width: 100%;
@@ -232,17 +272,17 @@ onBeforeUnmount(() => {
   overflow-y: auto;
 }
 
-.chatting .gc-column :deep(.gc-column__footer .chat-input .input:empty::before) {
+.chatting :deep(.gc-column__footer .chat-input .input::before) {
   content: attr(placeholder);
   color: #bbb;
 }
 
-.chatting .gc-column :deep(.gc-column__footer .chat-input .chat-oprate a) {
+.chatting :deep(.gc-column__footer .chat-input .chat-oprate a) {
   font-size: 20px;
   padding: 5px;
 }
 
-.chatting .gc-column :deep(.gc-column__footer .chat-input .chat-oprate a i) {
+.chatting :deep(.gc-column__footer .chat-input .chat-oprate a i) {
   color: #8792a5;
 }
 </style>

@@ -1,11 +1,10 @@
-import type { IChatListVo } from '@/mock/types/chat/chat.vo.ts'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 
 const useChatStore = defineStore('chatStore', () => {
   // 聊天记录列表
-  const chatList = ref<IChatListVo[]>([])
-  const updateChatList = (list: IChatListVo[]) => {
+  const chatList = ref<any[]>([])
+  const updateChatList = (list: any[]) => {
     chatList.value = list
   }
 
@@ -18,7 +17,7 @@ const useChatStore = defineStore('chatStore', () => {
   // 正在进行中的聊天
   const activeChat = computed(() => {
     const index = chatList.value.findIndex((chat) => {
-      return chat.user_id === activeChatId.value
+      return chat.reciver_id === activeChatId.value
     })
 
     if (index > -1) {
