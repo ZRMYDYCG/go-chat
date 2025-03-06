@@ -110,7 +110,9 @@ defineExpose({
         <div class="search">
           <el-input v-model="searchFormMdl.keywords" placeholder="搜索" clearable>
             <template #prefix>
-              <i class="ri-search-line"></i>
+              <el-icon>
+                <Search />
+              </el-icon>
             </template>
           </el-input>
         </div>
@@ -118,7 +120,9 @@ defineExpose({
         <div class="oprate">
           <el-button circle size="small" title="添加好友" @click="emit('add-contact')">
             <template #icon>
-              <i class="ri-zoom-in-line"></i>
+              <el-icon>
+                <Plus />
+              </el-icon>
             </template>
           </el-button>
         </div>

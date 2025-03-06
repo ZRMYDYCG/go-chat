@@ -6,19 +6,20 @@
 
     <div class="chat-data" :class="{ 'flex justify-end': isMe }">
       <div v-if="!isMe" class="avater float-left mr-[15px]">
-        <img :src="message.avatar" alt="" />
+        <img :src="formatServerFilePath(message.avatar)" alt="" />
       </div>
       <div class="message relative inline-block" :class="{ 'message--me': isMe }">
         {{ message.content }}
       </div>
       <div v-if="isMe" class="avater float-right ml-[15px]">
-        <img src="@/assets/default_avatar.png" alt="" />
+        <img :src="formatServerFilePath(message.avatar)" alt="" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useCurrentInstance } from '@/hooks'
 import { defineProps } from 'vue'
 
 interface Message {
@@ -30,6 +31,12 @@ interface Message {
   send_time: string
   is_me: boolean
 }
+
+const currentInstance = useCurrentInstance()
+
+const { $common } = currentInstance.proxy
+
+const { formatServerFilePath } = $common
 
 const props = defineProps({
   message: {

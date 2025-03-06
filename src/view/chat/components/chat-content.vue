@@ -2,45 +2,44 @@
   <div class="chatting">
     <GcColumn ref="gcColumnRef">
       <template #header>
-        <div v-if="chatStore.activeChat" class="user flex w-[100%]">
+        <div v-if="activeChat" class="user flex w-[100%]">
           <div class="avater">
-            <img :src="chatStore.activeChat.avater" alt="" />
+            <img :src="$common.formatServerFilePath(activeChat.avatar)" alt="" />
           </div>
-          <div class="info flex flex-col justify-center">
-            <div class="info-top flex items-center justify-between">
-              <p class="nickname">{{ chatStore.activeChat.nickname }}</p>
+          <div class="info flex items-center justify-between">
+            <div>
+              <div class="info-top flex items-center justify-between">
+                <p class="nickname">{{ activeChat?.remark }}</p>
+              </div>
+              <div class="info-bottom flex items-center gap-2">
+                <span class="h-[10px] w-[10px] rounded-full bg-green-500"></span>
+                <p class="desc">在线</p>
+              </div>
             </div>
-
-            <div class="info-bottom flex">
-              <p class="desc">{{ chatStore.activeChat.slogan }}</p>
+            <div class="mr-3 flex gap-6">
+              <el-icon>
+                <Phone />
+              </el-icon>
+              <el-icon>
+                <VideoCamera />
+              </el-icon>
+              <el-icon> <More /> </el-icon>
             </div>
           </div>
         </div>
       </template>
-
       <div class="chat-list">
         <ChatItem v-for="message in messageList" :key="message.id" :message="message" :is-me="message.is_me"></ChatItem>
       </div>
-
       <template #footer>
-        <div class="chat-input flex items-center justify-around">
-          <div
-            ref="inputRef"
-            class="input"
-            :contenteditable="Boolean(chatStore.activeChat)"
-            placeholder="输入聊天内容..."
-          ></div>
-
-          <div class="chat-oprate">
-            <a href="javascript:void(0)">
-              <i class="ri-emotion-happy-line"></i>
-            </a>
-            <a href="javascript:void(0)">
-              <i class="ri-landscape-line"></i>
-            </a>
-            <a href="javascript:void(0)" @click="handleSendMessage">
-              <i class="ri-send-plane-line"></i>
-            </a>
+        <div class="chat-input">
+          <el-input v-model="inputMessage" type="textarea" :rows="3" placeholder="输入消息" resize="none" />
+          <div class="chat-input-actions">
+            <div class="left">
+              <el-button :icon="Picture" circle plain />
+              <el-button :icon="Orange" circle plain />
+            </div>
+            <el-button type="primary" @click="sendMessage(inputMessage)">发送</el-button>
           </div>
         </div>
       </template>
@@ -52,8 +51,10 @@
 import GcColumn from '@/components/Column/index.vue'
 import { useCurrentInstance, useLoadMore, usePageList, useSocket } from '@/hooks'
 import useChatStore from '@/store/modules/chat'
+import { useUserStore } from '@/store/modules/user.ts'
 import { formatDate } from '@/utils/helper/data'
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { Orange, Picture } from '@element-plus/icons-vue'
+import { nextTick, onMounted, ref, toRefs, watch } from 'vue'
 import ChatItem from './chat-item.vue'
 
 interface MessageItem {
@@ -65,6 +66,7 @@ interface MessageItem {
   send_time: string
   type: string
   is_me: boolean
+  avatar?: string
 }
 
 const emit = defineEmits<{
@@ -75,10 +77,16 @@ const { $api } = useCurrentInstance()
 const chatStore = useChatStore()
 const { socket } = useSocket()
 
+const { activeChat } = toRefs(chatStore)
+
+const userStore = useUserStore()
+
 const searchFormMdl = ref({
   reciver_id: chatStore.activeChat?.reciver_id || '',
   keywords: '',
 })
+
+const inputMessage = ref('')
 
 // 消息列表
 const {
@@ -146,9 +154,6 @@ onMounted(() => {
   })
 })
 
-// 聊天输入框
-const inputRef = ref<HTMLDivElement | null>(null)
-
 const sendMessage = async (message: string) => {
   if (message === '') {
     return false
@@ -163,12 +168,15 @@ const sendMessage = async (message: string) => {
     type: '0',
     is_me: true,
   }
-  messageList.value.push(item)
+  messageList.value.push({ ...item, avatar: userStore.userInfo.avatar || '' })
 
   // socket发送消息到服务器
   socket.emit('chat-1v1-to-server', item)
 
   emit('send-message', item)
+
+  inputMessage.value = ''
+  scrollToBottom()
 }
 
 // 接收socket消息来信
@@ -176,46 +184,12 @@ socket.on('chat-1v1-to-client', (message: MessageItem) => {
   messageList.value.push(message)
   scrollToBottom()
 })
-
-const handleKeyDown = (e: KeyboardEvent) => {
-  if (e.key === 'Enter') {
-    e.preventDefault()
-
-    // 执行发送聊天消息
-    sendMessage((e.target as HTMLDivElement).innerHTML).then(() => {
-      scrollToBottom()
-      ;(e.target as HTMLDivElement).innerHTML = ''
-    })
-  }
-}
-
-onMounted(() => {
-  if (inputRef.value) {
-    inputRef.value.addEventListener('keydown', handleKeyDown)
-  }
-})
-
-onBeforeUnmount(() => {
-  if (inputRef.value) {
-    inputRef.value.removeEventListener('keydown', handleKeyDown)
-  }
-})
-
-const handleSendMessage = () => {
-  if (inputRef.value) {
-    // 执行发送聊天消息
-    sendMessage(inputRef.value.innerHTML).then(() => {
-      scrollToBottom()
-      inputRef.value!.innerHTML = ''
-    })
-  }
-}
 </script>
 
 <style scoped>
 .chatting {
   flex: 1;
-  height: 850px;
+  height: 100vh;
 }
 
 .chatting :deep(.gc-column__header) {
@@ -255,34 +229,39 @@ const handleSendMessage = () => {
 }
 
 .chatting :deep(.gc-column__footer) {
-  padding: 15px;
+  //padding: 15px;
 }
 
-.chatting :deep(.gc-column__footer .chat-input) {
-  padding: 15px;
-  background-color: #edeff0;
-  border-radius: 15px;
+.chat-input {
+  padding: 16px; /* 增加填充以提升输入区域的布局 */
 }
 
-.chatting :deep(.gc-column__footer .chat-input .input) {
-  max-width: 500px;
-  height: 31px;
-  width: 100%;
-  outline: 0;
-  overflow-y: auto;
+.chat-input .input-actions {
+  display: flex;
+  gap: 8px;
+  padding: 8px 0;
 }
 
-.chatting :deep(.gc-column__footer .chat-input .input::before) {
-  content: attr(placeholder);
-  color: #bbb;
+.chat-input .chat-input-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
 }
 
-.chatting :deep(.gc-column__footer .chat-input .chat-oprate a) {
-  font-size: 20px;
-  padding: 5px;
+.chat-input .chat-input-actions .left {
+  display: flex;
+  align-items: center;
 }
 
-.chatting :deep(.gc-column__footer .chat-input .chat-oprate a i) {
-  color: #8792a5;
+.chat-input .chat-input-actions .left i {
+  margin-right: 20px;
+  font-size: 16px;
+  color: #eee;
+  cursor: pointer;
+}
+
+.chat-input .chat-input-actions el-button {
+  min-width: 80px;
 }
 </style>

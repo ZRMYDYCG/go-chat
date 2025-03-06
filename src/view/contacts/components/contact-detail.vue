@@ -9,7 +9,7 @@
             <img v-if="String(contact.sex) === '1'" class="sex" src="@/assets/male.png" alt="" />
             <el-button circle size="small" class="ml-[5px]" title="资料设置" @click="$emit('set-contact-info')">
               <template #icon>
-                <i class="ri-edit-box-line"></i>
+                <el-icon><EditPen /></el-icon>
               </template>
             </el-button>
           </div>
@@ -18,14 +18,14 @@
 
         <div class="right">
           <div class="avater">
-            <img :src="contact.avatar" alt="" />
+            <img :src="$common.formatServerFilePath(contact.avatar)" />
           </div>
         </div>
       </div>
 
       <div class="other-info">
         <div class="info-row flex items-center">
-          <div class="lable">名称</div>
+          <div class="lable">昵称</div>
           <div class="value">{{ contact.nickname }}</div>
         </div>
         <div class="info-row flex items-center">

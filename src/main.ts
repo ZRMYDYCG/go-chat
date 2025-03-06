@@ -6,6 +6,7 @@ import { registerStore } from '@/store'
 import { createApp } from 'vue'
 import './css/app.css'
 // import './css/dark/css-vars.css'
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import './css/main.css'
 
 import mock from './mock'
@@ -17,6 +18,9 @@ function bootstrap() {
   registerStore(app)
   registerRouter(app)
   registerPlugins(app)
+  for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+    app.component(key, component)
+  }
 
   app.mount('#app')
 }
