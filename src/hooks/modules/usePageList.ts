@@ -1,57 +1,62 @@
 /**
  * @description: 页面列表
  * */
-
 import { HTTP_CODE } from '@/settings/config/http'
 import { isFunction } from '@/utils/helper/is'
 import { ElMessage } from 'element-plus'
 import type { Ref } from 'vue'
 import { computed, ref } from 'vue'
 
+// 定义接口和类型
 interface PageListOptions<T> {
   getPageListApi: (params: any) => Promise<any>
-  searchParams: Ref<{ [key: string]: any }>
+  searchParams: Ref<any>
   dataAppend?: 'start' | 'end'
 }
 
-interface PageListResult<T> {
-  list: Ref<T[]>
-  page: Ref<number>
-  limit: Ref<number>
-  count: Ref<number>
-  loadding: Ref<boolean>
-  getPageList: () => Promise<void>
-  initData: () => void
-  refreshing: Ref<boolean>
-  refreshPageList: () => Promise<void>
-  handleRefresh: () => Promise<void>
-  loadMore: () => Promise<void>
-  isNoMore: Ref<boolean>
-  isEmpty: Ref<boolean>
+interface OriginData<T> {
+  list: T[]
+  page: number
+  limit: number
+  count: number
 }
 
-export const usePageList = <T>(options: PageListOptions<T>): PageListResult<T> => {
-  const { getPageListApi, searchParams, dataAppend = 'end' } = options
-
-  const appendData = (rows: T[]) => {
-    if (dataAppend === 'start') {
-      list.value = [...rows, ...list.value]
-    } else if (dataAppend === 'end') {
-      list.value = [...list.value, ...rows]
-    }
+// 使用泛型 T 来表示列表项的类型
+export const usePageList = <T>(options: PageListOptions<T>) => {
+  // 默认值处理
+  options = {
+    dataAppend: 'end',
+    ...options,
   }
+
+  const { getPageListApi, searchParams, dataAppend } = options
+
+  // 定义 appendData 函数
+  const appendData = (() => {
+    if (dataAppend === 'start') {
+      return (rows: T[]) => {
+        list.value = [...rows, ...list.value]
+      }
+    } else if (dataAppend === 'end') {
+      return (rows: T[]) => {
+        list.value = [...list.value, ...rows]
+      }
+    }
+  })()
 
   if (!isFunction(getPageListApi)) {
-    throw new Error(`getPageListApi: ${getPageListApi}，需要为函数`)
+    throw Error(`getPageListApi: ${getPageListApi}，需要为函数`)
   }
 
-  const originData = {
-    list: [] as T[],
+  // 初始数据
+  const originData: OriginData<T> = {
+    list: [],
     page: 1,
     limit: 10,
     count: 0,
   }
 
+  // 初始化数据
   const initData = () => {
     list.value = [...originData.list]
     page.value = originData.page
@@ -59,12 +64,15 @@ export const usePageList = <T>(options: PageListOptions<T>): PageListResult<T> =
     count.value = originData.count
   }
 
+  // 定义响应式变量
   const list = ref<T[]>([...originData.list]) as Ref<T[]>
   const page = ref(originData.page) as Ref<number>
   const limit = ref(originData.limit) as Ref<number>
   const count = ref(originData.count) as Ref<number>
   const loadding = ref(false) as Ref<boolean>
+  const refreshing = ref(false) as Ref<boolean>
 
+  // 获取分页列表数据
   const getPageList = async () => {
     loadding.value = true
     const params = {
@@ -85,13 +93,13 @@ export const usePageList = <T>(options: PageListOptions<T>): PageListResult<T> =
         loadding.value = false
       })
 
-    if (res && res.data) {
+    if (res) {
       const { code, data, message } = res.data
       const { count: total, rows } = data
 
       if (code === HTTP_CODE.HTTP_SUCCESS_CODE) {
         if (rows.length) {
-          appendData(rows)
+          appendData?.(rows)
           page.value = page.value + 1
           count.value = total
         }
@@ -105,12 +113,13 @@ export const usePageList = <T>(options: PageListOptions<T>): PageListResult<T> =
     }
   }
 
-  const refreshing = ref(false) as Ref<boolean>
+  // 刷新列表
   const refreshPageList = async () => {
     initData()
     await getPageList()
   }
 
+  // 处理刷新
   const handleRefresh = async () => {
     refreshing.value = true
     await refreshPageList().finally(() => {
@@ -118,6 +127,7 @@ export const usePageList = <T>(options: PageListOptions<T>): PageListResult<T> =
     })
   }
 
+  // 加载更多
   const loadMore = async () => {
     if (isNoMore.value) {
       return
@@ -125,10 +135,12 @@ export const usePageList = <T>(options: PageListOptions<T>): PageListResult<T> =
     await getPageList()
   }
 
+  // 是否已无更多数据
   const isNoMore = computed(() => {
     return list.value.length >= count.value && page.value > 1
   })
 
+  // 是否无数据
   const isEmpty = computed(() => {
     return list.value.length === 0 && page.value > 1
   })

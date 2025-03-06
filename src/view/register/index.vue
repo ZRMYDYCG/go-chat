@@ -10,7 +10,7 @@
     >
       <div class="logo">
         <img src="@/assets/logo.png" alt="logo" />
-        <h3>GoChat</h3>
+        <h3>LightChat</h3>
       </div>
 
       <el-form-item prop="account">
@@ -55,10 +55,11 @@
 </template>
 
 <script setup lang="ts">
-import { useUserStore } from '@/store/modules/user.ts'
+import { useCurrentInstance } from '@/hooks'
 import { Unlock as IconUnlock, User as IconUser } from '@element-plus/icons-vue'
-import { ElMessage, type ElForm } from 'element-plus'
-import { reactive, ref } from 'vue'
+import { ElMessage, type FormInstance } from 'element-plus'
+import 'element-plus/theme-chalk/el-message.css'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const rules = {
@@ -66,31 +67,68 @@ const rules = {
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
 }
 
-const router = useRouter()
-const userStore = useUserStore()
+interface FormModel {
+  account: string
+  password: string
+}
 
-const registerFormRef = ref<InstanceType<typeof ElForm>>()
+const { $api, $HTTP_CODE } = useCurrentInstance()
+const router = useRouter()
+
+const registerFormRef = ref<FormInstance>()
 const loading = ref(false)
-const formMdl = reactive<any>({
+const formMdl = ref<FormModel>({
   account: '',
   password: '',
 })
 
+// console.log('$api:', $api)
+
 const handleRegister = async () => {
   if (loading.value) return
 
-  const valid = await registerFormRef.value?.validate().catch(() => false)
+  // console.log('formMdl:', formMdl.value)
+
+  // 表单验证
+  let valid = false
+  try {
+    valid = (await registerFormRef.value?.validate?.()) ?? false
+  } catch (error) {
+    console.error('表单验证失败:', error)
+    valid = false
+  }
+
+  // console.log('valid:', valid)
+
   if (!valid) return
 
   loading.value = true
+
   try {
-    await userStore.accountRegister(formMdl)
-    ElMessage.success({ message: '注册成功', duration: 3000 })
-    await router.push('/login')
+    const res = await $api.login.accountRegister(formMdl.value)
+    const { code, message } = res.data
+
+    if (code === $HTTP_CODE.HTTP_SUCCESS_CODE) {
+      ElMessage.success({
+        message: '注册成功',
+        duration: 3000,
+      })
+      await router.push('/login')
+    } else {
+      ElMessage.error({
+        message: message?.toString() || '未知错误',
+        duration: 3000,
+      })
+    }
   } catch (error: any) {
-    ElMessage.error({ message: error?.message || '注册失败', duration: 3000 })
+    ElMessage.error({
+      message: error?.message?.toString() || '请求失败',
+      duration: 3000,
+    })
   } finally {
-    setTimeout(() => (loading.value = false), 150)
+    setTimeout(() => {
+      loading.value = false
+    }, 150)
   }
 }
 </script>

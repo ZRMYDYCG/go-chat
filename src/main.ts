@@ -10,7 +10,7 @@ import './css/main.css'
 
 import mock from './mock'
 
-mock(true)
+mock(false)
 
 function bootstrap() {
   const app = createApp(App)

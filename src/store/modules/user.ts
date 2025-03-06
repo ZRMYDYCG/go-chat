@@ -35,7 +35,7 @@ export const useUserStore = defineStore('userStore', () => {
           if (code === HTTP_CODE.HTTP_SUCCESS_CODE) {
             const { avatar, ...extra } = data.info
             updateUserInfo({
-              avatar: `${HTTP_HOST}${avatar}`,
+              avatar: `${HTTP_HOST}upload/avatar/${avatar}`,
               ...extra,
             })
             updateToken(data.token)

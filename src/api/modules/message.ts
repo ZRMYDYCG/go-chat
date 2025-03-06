@@ -4,7 +4,3 @@ import http from '@/utils/http'
 export const getChatMessageList = (params) => {
   return http.get('/api/v1/message/list', params)
 }
-
-export default {
-  getChatMessageList,
-}

@@ -1,5 +1,5 @@
 <template>
-  <div class="chat-history h-screen w-[300px]">
+  <div class="chat-history">
     <GcColumn ref="gcColumnRef">
       <template #header>
         <div class="search">
@@ -18,7 +18,7 @@
         ref="chatListRef"
         :list="chatList"
         :options="{
-          key: 'user_id',
+          key: 'reciver_id',
         }"
         @change="handleChangeChatListItem"
       >
@@ -26,11 +26,11 @@
           <div class="chat-item flex w-[100%]">
             <div class="user flex w-[100%] items-center">
               <div class="avater">
-                <img :src="item.avatar" alt="" />
+                <img :src="formatServerFilePath(item.avatar)" alt="头像" />
               </div>
               <div class="info">
                 <div class="info-top flex items-center justify-between">
-                  <p class="nickname">{{ item.nickname }}</p>
+                  <p class="remark truncate">{{ item.remark }}</p>
                   <span class="date">{{ $date.formatDate(item.send_time, 'HH:mm') }}</span>
                 </div>
 
@@ -40,6 +40,19 @@
                   </p>
                 </div>
               </div>
+            </div>
+            <div class="oprate" @click.stop>
+              <el-dropdown :teleported="false" placement="top" @command="handleOparete($event, item)">
+                <el-button link>
+                  <i class="ri-more-fill"></i>
+                </el-button>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item command="top">置顶聊天</el-dropdown-item>
+                    <el-dropdown-item command="delete">删除</el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
             </div>
           </div>
         </template>
@@ -51,49 +64,58 @@
 <script setup lang="ts">
 import GcColumn from '@/components/Column/index.vue'
 import GcList from '@/components/List/index.vue'
-import { useCurrentInstance, useLoadMore, usePageList } from '@/hooks'
+import { useCurrentInstance, useLoadMore, usePageList, useSocket } from '@/hooks'
 import useChatStore from '@/store/modules/chat'
+import { ElMessage } from 'element-plus'
+import 'element-plus/theme-chalk/el-message.css'
 import { debounce } from 'lodash-es'
-import { onMounted, ref, watch } from 'vue'
+import { onActivated, onMounted, ref, watch } from 'vue'
 
-const { $api } = useCurrentInstance()
-const chatStore = useChatStore()
+interface ChatItem {
+  reciver_id: string
+  avatar: string
+  remark: string
+  send_time: string
+  last_message: string
+}
 
 interface SearchFormModel {
   keywords: string
 }
 
-interface ChatItem {
-  user_id: string
-  avatar: string
-  nickname: string
-  send_time: string
-  last_message: string
-}
+const { $api, $HTTP_CODE, $common } = useCurrentInstance()
+const { formatServerFilePath } = $common
+const chatStore = useChatStore()
+const { socket } = useSocket()
 
 const searchFormMdl = ref<SearchFormModel>({
   keywords: '',
 })
 
-const chatListRef = ref<any>(null)
+const chatListRef = ref(null)
+const gcColumnRef = ref(null)
 
 const {
   list: chatList,
-  loading, // 这里应该是 loading 而不是 loadding
+  loadding,
   getPageList,
+  handleRefresh,
 } = usePageList<ChatItem>({
   getPageListApi: $api.chat.getChatHistoryList,
   searchParams: searchFormMdl,
 })
 
-onMounted(async () => {
-  await getPageList()
+onActivated(async () => {
+  await initChatList()
+})
+
+const initChatList = async () => {
+  await handleRefresh()
   if (chatList.value.length) {
     chatListRef.value?.handleChangeItem(chatList.value[0])
   }
-})
+}
 
-const gcColumnRef = ref<any>(null)
 onMounted(() => {
   useLoadMore({
     type: 'bottom',
@@ -104,7 +126,7 @@ onMounted(() => {
 })
 
 watch(
-  chatList,
+  () => chatList.value,
   () => {
     chatStore.updateChatList(chatList.value)
   },
@@ -114,10 +136,62 @@ watch(
   },
 )
 
+socket.on('chat-1v1-to-client', (message: any) => {
+  autoRefreshLastMessage(message)
+})
+
+const autoRefreshLastMessage = (message: any, userIdKey = 'user_id') => {
+  const { content } = message
+
+  chatList.value = chatList.value.map((chat) => {
+    if (message[userIdKey] === chat.reciver_id) {
+      chat.last_message = content
+    }
+    return chat
+  })
+}
+
 const handleChangeChatListItem = debounce((chatId: string, chat: ChatItem) => {
-  // console.log('聊天记录item切换', chatId, chat)
   chatStore.updateActiveChatId(chatId)
 }, 300)
+
+socket.on('server:auto-create-chat', () => {
+  handleRefresh()
+})
+
+const handleOparete = (command: string, chat: ChatItem) => {
+  switch (command) {
+    case 'delete':
+      deleteChat(chat)
+      break
+    case 'top':
+      // topChat();
+      break
+  }
+}
+
+const deleteChat = async (chat: ChatItem) => {
+  const { id: chat_id, reciver_id } = chat
+  const params = {
+    chat_id,
+    reciver_id,
+  }
+
+  const res = await $api.chat.deleteChat({ params })
+  const { code, message } = res.data
+  if (code === $HTTP_CODE.HTTP_SUCCESS_CODE) {
+    ElMessage.success({
+      message,
+      duration: 3000,
+    })
+    handleRefresh()
+  } else {
+    ElMessage.error({
+      message,
+      duration: 3000,
+    })
+  }
+}
 </script>
 
 <style scoped>
