@@ -7,11 +7,11 @@
     :close-on-click-modal="true"
     @closed="handleClosed"
   >
-    <GCColumn ref="gcColumnRef" v-loading="loading" class="!h-[400px]">
+    <GcColumn ref="gcColumnRef" v-loading="loading" class="!h-[400px]">
       <template #header>
         <el-form ref="searchFormRef" :model="searchFormMdl" class="search" @submit.prevent="handleSearchFriend">
-          <el-form-item prop="keywords">
-            <el-input v-model="searchFormMdl.keywords" placeholder="搜索" clearable>
+          <el-form-item prop="account">
+            <el-input v-model="searchFormMdl.account" placeholder="搜索" clearable>
               <template #prefix>
                 <i class="ri-search-line"></i>
               </template>
@@ -20,8 +20,7 @@
         </el-form>
       </template>
 
-      <!-- S 搜素结果 -->
-      <GCList
+      <GcList
         ref="contactListRef"
         :list="contactList"
         :options="{
@@ -45,70 +44,119 @@
             </div>
           </div>
         </template>
-      </GCList>
-      <!-- E 搜素结果 -->
-    </GCColumn>
+      </GcList>
+    </GcColumn>
   </el-dialog>
 </template>
 
 <script setup lang="ts">
-import GCColumn from '@/components/Column/index.vue'
-import GCList from '@/components/List/index.vue'
+import GcColumn from '@/components/Column/index.vue'
+import GcList from '@/components/List/index.vue'
 import { useCurrentInstance, useLoadMore, usePageList } from '@/hooks'
-import type { ElForm } from 'element-plus'
-import { nextTick, onMounted, reactive, ref } from 'vue'
+import { formatServerFilePath } from '@/utils/helper/common.ts'
+import { ElButton, ElForm, ElInput, ElMessage } from 'element-plus'
+import { debounce } from 'lodash-es'
+import { nextTick, onMounted, ref } from 'vue'
 
-interface ContactItem {
-  user_id: string | number
-  avatar: string
+interface Contact {
+  user_id: string
   nickname: string
+  avatar: string
 }
 
-const { proxy } = useCurrentInstance()
-const $api = proxy.$api
+interface SearchForm {
+  account: string
+}
 
-const dialogVisible = ref(false)
-const loading = ref(false)
+const emit = defineEmits(['create-success'])
 
+const { $api, $HTTP_CODE } = useCurrentInstance()
+
+const dialogVisible = ref(true)
 const searchFormRef = ref<InstanceType<typeof ElForm>>()
-const searchFormMdl = reactive({
-  keywords: '',
+const searchFormMdl = ref<SearchForm>({
+  account: '',
 })
 
 const {
   list: contactList,
-  loading: listLoading,
+  loadding,
   getPageList,
   initData,
-  handleRefresh,
-} = usePageList<ContactItem>({
+} = usePageList<any>({
   getPageListApi: $api.contact.getContactList,
   searchParams: searchFormMdl,
 })
 
-const gcColumnRef = ref<InstanceType<typeof GCColumn>>()
+const handleSearchFriend = async () => {
+  loadding.value = true
+  const params = {
+    ...searchFormMdl.value,
+  }
+  const res = await $api.user
+    .searchUserList({
+      params,
+    })
+    .finally(() => {
+      loadding.value = false
+    })
 
-// 加载更多逻辑
+  const { code, data, message } = res.data
+  if (code === $HTTP_CODE.HTTP_SUCCESS_CODE) {
+    contactList.value = data.rows.map((contact: Contact) => {
+      contact.avatar = formatServerFilePath(contact.avatar)
+      return contact
+    })
+  }
+}
+
+const gcColumnRef = ref(null)
 onMounted(() => {
   nextTick(() => {
-    const scrollContainer = gcColumnRef.value?.$el?.querySelector('.el-scrollbar__wrap')
-    if (scrollContainer) {
-      useLoadMore({
-        type: 'bottom',
-        scrollBottomCallback: getPageList,
-        container: scrollContainer,
-        distance: 150,
-      })
-    }
+    useLoadMore({
+      type: 'bottom',
+      scrollBottomCallback: getPageList,
+      container: gcColumnRef.value?.elScrollbar.wrapRef,
+      distance: 150,
+    })
   })
 })
 
-const handleSearchFriend = () => {
-  handleRefresh()
-}
+const createLoading = ref(false)
+const handleAdd = debounce((contact: Contact) => {
+  createContact(contact)
+}, 50)
 
-const handleAdd = (contact: ContactItem) => {
-  // console.log('添加为好友', contact)
+const createContact = async (contact: Contact) => {
+  if (createLoading.value) {
+    return false
+  }
+
+  createLoading.value = true
+  const { id: reciver_id } = contact
+  const params = {
+    reciver_id,
+  }
+
+  const res = await $api.contact.createContact(params).finally(() => {
+    createLoading.value = false
+  })
+
+  const { code, message } = res.data
+  if (code === $HTTP_CODE.HTTP_SUCCESS_CODE) {
+    ElMessage.success({
+      message,
+      duration: 3000,
+    })
+
+    close()
+    emit('create-success')
+  } else {
+    ElMessage.error({
+      message,
+      duration: 3000,
+    })
+  }
 }
 
 const handleClosed = () => {

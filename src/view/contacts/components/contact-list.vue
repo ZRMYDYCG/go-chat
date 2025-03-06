@@ -2,68 +2,105 @@
 import GcColumn from '@/components/Column/index.vue'
 import GcList from '@/components/List/index.vue'
 import { useCurrentInstance, useLoadMore, usePageList } from '@/hooks'
-import { onMounted, ref } from 'vue'
+import { ElMessage } from 'element-plus'
+import { computed, onMounted, ref } from 'vue'
 
-interface ContactItem {
-  user_id: string | number
-  nickname: string
+interface Contact {
+  reciver_id: string
   avatar: string
+  remark: string
+  id: string
 }
 
-interface SearchForm {
-  keywords: string
-}
+const emit = defineEmits(['change', 'add-contact', 'show-new-contact'])
 
-const emit = defineEmits<{
-  (e: 'change', contactId: string | number, contact: ContactItem): void
-  (e: 'add-contact'): void
-  (e: 'show-new-contact'): void
-}>()
+const { $api, $HTTP_CODE, $common } = useCurrentInstance()
+const { formatServerFilePath } = $common
 
-const { $api } = useCurrentInstance()
-
-// 表单类型
-const searchFormMdl = ref<SearchForm>({
+const searchFormMdl = ref({
   keywords: '',
 })
 
-// 组件引用类型
-const contactListRef = ref<InstanceType<typeof GcList> | null>(null)
-const gcColumnRef = ref<InstanceType<typeof GcColumn> | null>(null)
+const contactListRef = ref(null)
 
-// 联系人列表逻辑
 const {
   list: contactList,
   loadding,
   getPageList,
-} = usePageList<ContactItem>({
+  handleRefresh,
+} = usePageList<Contact>({
   getPageListApi: $api.contact.getContactList,
   searchParams: searchFormMdl,
 })
 
-// 加载更多逻辑
 onMounted(async () => {
   await getPageList()
-  if (contactList.value.length) {
-    contactListRef.value?.handleChangeItem(contactList.value[0])
-  }
-
-  const container = gcColumnRef.value?.elScrollbar.wrapRef
-  if (container) {
-    useLoadMore({
-      type: 'bottom',
-      scrollBottomCallback: getPageList,
-      container,
-      distance: 150,
-    })
-  }
+  contactList.value.length && contactListRef.value.handleChangeItem(contactList.value[0])
 })
 
-// 联系人切换处理
-const handleChangeContactListItem = (contactId: string | number, contact: ContactItem) => {
-  // console.log('联系人item切换', contactId, contact)
+const gcColumnRef = ref(null)
+onMounted(() => {
+  useLoadMore({
+    type: 'bottom',
+    scrollBottomCallback: getPageList,
+    container: gcColumnRef.value?.elScrollbar.wrapRef,
+    distance: 150,
+  })
+})
+
+const handleChangeContactListItem = (contactId: string, contact: Contact) => {
   emit('change', contactId, contact)
 }
+
+const filterContactList = computed(() => {
+  return contactList.value.filter((contact) => {
+    return new RegExp(searchFormMdl.value.keywords).test(contact.remark)
+  })
+})
+
+const handleOparete = (command: string, contact: Contact) => {
+  switch (command) {
+    case 'delete':
+      deleteContact(contact)
+      break
+  }
+}
+
+const deleteContact = async (contact: Contact) => {
+  const { id } = contact
+
+  const params = {
+    id,
+  }
+  const res = await $api.contact.deleteContact({ params })
+  const { code, message } = res.data
+  if (code === $HTTP_CODE.HTTP_SUCCESS_CODE) {
+    ElMessage.success({
+      message,
+      duration: 3000,
+    })
+
+    handleRefresh()
+  } else {
+    ElMessage.error({
+      message,
+      duration: 3000,
+    })
+  }
+}
+
+defineExpose({
+  formatServerFilePath,
+  searchFormMdl,
+  contactList,
+  loadding,
+  handleRefresh,
+  contactListRef,
+  gcColumnRef,
+  handleChangeContactListItem,
+  filterContactList,
+  handleOparete,
+})
 </script>
 
 <template>
@@ -79,17 +116,11 @@ const handleChangeContactListItem = (contactId: string | number, contact: Contac
         </div>
 
         <div class="oprate">
-          <el-button circle size="small" title="添加好友" @click="$emit('add-contact')">
+          <el-button circle size="small" title="添加好友" @click="emit('add-contact')">
             <template #icon>
               <i class="ri-zoom-in-line"></i>
             </template>
           </el-button>
-
-          <!-- <el-button circle size="small" title="新的朋友" @click="$emit('show-new-contact')">
-            <template #icon>
-              <i class="ri-user-received-line"></i>
-            </template>
-          </el-button> -->
         </div>
       </template>
 
@@ -98,9 +129,9 @@ const handleChangeContactListItem = (contactId: string | number, contact: Contac
       </template>
       <GcList
         ref="contactListRef"
-        :list="contactList"
+        :list="filterContactList"
         :options="{
-          key: 'user_id',
+          key: 'reciver_id',
         }"
         @change="handleChangeContactListItem"
       >
@@ -108,13 +139,25 @@ const handleChangeContactListItem = (contactId: string | number, contact: Contac
           <div class="contact-item flex w-[100%]">
             <div class="user flex w-[100%] items-center">
               <div class="avater">
-                <img :src="item.avatar" alt="" />
+                <img :src="formatServerFilePath(item.avatar)" alt="" />
               </div>
               <div class="info">
                 <div class="info-top flex items-center justify-between">
-                  <p class="nickname truncate">{{ item.nickname }}</p>
+                  <p class="remark truncate">{{ item.remark }}</p>
                 </div>
               </div>
+            </div>
+            <div class="oprate" @click.stop>
+              <el-dropdown :teleported="false" placement="top" @command="handleOparete($event, item)">
+                <el-button link>
+                  <i class="ri-more-fill"></i>
+                </el-button>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item command="delete">删除</el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
             </div>
           </div>
         </template>

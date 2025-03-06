@@ -28,16 +28,40 @@
 
 <script setup lang="ts">
 import { useCurrentInstance } from '@/hooks'
-import { computed, ref } from 'vue'
+import { ElMessage } from 'element-plus'
+import { computed, ref, watch } from 'vue'
 
-const { $api } = useCurrentInstance()
+interface ActiveContact {
+  remark?: string
+  desc?: string
+  [key: string]: any
+}
+
+const props = defineProps<{
+  activeContact: ActiveContact
+}>()
+
+const emit = defineEmits<{
+  (e: 'set-success'): void
+}>()
+
+const { $api, $HTTP_CODE } = useCurrentInstance()
 
 const dialogVisible = ref(true)
-const formRef = ref<InstanceType<any> | null>(null)
-const formMdl = ref({
-  remark: '',
-  desc: '',
+
+const formRef = ref<any>(null)
+const formMdl = ref<ActiveContact>({
+  ...props.activeContact,
 })
+
+watch(
+  () => props.activeContact,
+  (newContact) => {
+    formMdl.value = {
+      ...newContact,
+    }
+  },
+)
 
 const isNoneValues = computed(() => {
   return Object.values(formMdl.value).every((value) => {
@@ -45,24 +69,61 @@ const isNoneValues = computed(() => {
   })
 })
 
+const loadding = ref(false)
+
 const handleSetInfo = () => {
-  // console.log('handleSetInfo')
+  setContactInfo()
 }
 
+const setContactInfo = async () => {
+  loadding.value = true
+  const params = {
+    ...formMdl.value,
+  }
+  try {
+    const res = await $api.contact.setContactInfo(params)
+    const { code, message } = res.data
+    if (code === $HTTP_CODE.HTTP_SUCCESS_CODE) {
+      ElMessage.success({
+        message,
+        duration: 3000,
+      })
+
+      // 关闭弹窗
+      close()
+
+      // 刷新联系人列表
+      emit('set-success')
+    } else {
+      ElMessage.error({
+        message,
+        duration: 3000,
+      })
+    }
+  } catch (error) {
+    ElMessage.error({
+      message: '网络错误，请稍后重试',
+      duration: 3000,
+    })
+  } finally {
+    loadding.value = false
+  }
+}
+
+// 弹窗关闭
 const handleClosed = () => {
-  formRef.value?.resetFields()
+  if (formRef.value) {
+    formRef.value.resetFields()
+  }
 }
 
+// 打开弹窗
 const open = () => {
   dialogVisible.value = true
 }
 
+// 关闭弹窗
 const close = () => {
   dialogVisible.value = false
 }
-
-defineExpose({
-  open,
-  close,
-})
 </script>

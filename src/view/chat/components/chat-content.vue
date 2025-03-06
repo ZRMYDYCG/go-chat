@@ -131,7 +131,7 @@ onMounted(() => {
 
       await loadMore()
 
-      nextTick(() => {
+      await nextTick(() => {
         const scrollHeightAfter = container.scrollHeight
 
         // 维持原有滚动位置需要滚动的距离

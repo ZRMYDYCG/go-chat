@@ -1,34 +1,3 @@
-<script lang="ts" setup>
-interface Contact {
-  remark: string
-  sex: number | string
-  desc: string
-  avatar: string
-  nickname: string
-  account: string
-  [key: string]: any
-}
-
-interface Props {
-  contact?: Contact
-}
-
-// 定义 props 和 emits
-const emit = defineEmits(['set-contact-info'])
-
-import { withDefaults } from 'vue'
-withDefaults(defineProps<Props>(), {
-  contact: () => ({
-    remark: '',
-    sex: '',
-    desc: '',
-    avatar: '',
-    nickname: '',
-    account: '',
-  }),
-})
-</script>
-
 <template>
   <div class="contact-detail">
     <div class="contact-detail-wrapper">
@@ -36,8 +5,8 @@ withDefaults(defineProps<Props>(), {
         <div class="left">
           <div class="nickname flex items-center">
             <span>{{ contact.remark }}</span>
-            <img v-if="String(contact.sex) === '0'" class="sex" src="~@/assets/default_avatar.png" alt="" />
-            <img v-if="String(contact.sex) === '1'" class="sex" src="~@/assets/default_avatar.png" alt="" />
+            <img v-if="String(contact.sex) === '0'" class="sex" src="@/assets/female.png" alt="" />
+            <img v-if="String(contact.sex) === '1'" class="sex" src="@/assets/male.png" alt="" />
             <el-button circle size="small" class="ml-[5px]" title="资料设置" @click="$emit('set-contact-info')">
               <template #icon>
                 <i class="ri-edit-box-line"></i>
@@ -49,7 +18,7 @@ withDefaults(defineProps<Props>(), {
 
         <div class="right">
           <div class="avater">
-            <img :src="contact.avater" alt="" />
+            <img :src="contact.avatar" alt="" />
           </div>
         </div>
       </div>
@@ -66,11 +35,77 @@ withDefaults(defineProps<Props>(), {
       </div>
 
       <div class="oprate">
-        <el-button type="primary" class="mx-auto !block w-[140px]">发消息</el-button>
+        <el-button type="primary" class="mx-auto !block w-[140px]" @click="handleGoSendMessage">发消息</el-button>
       </div>
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { useCurrentInstance } from '@/hooks'
+import useChatStore from '@/store/modules/chat'
+import { ElMessage } from 'element-plus'
+import { debounce } from 'lodash-es'
+import { defineEmits, defineProps } from 'vue'
+import { useRouter } from 'vue-router'
+
+interface Contact {
+  remark: string
+  sex: string
+  desc: string
+  avatar: string
+  nickname: string
+  account: string
+  reciver_id: string
+}
+
+const props = defineProps<{
+  contact: Contact
+}>()
+
+const emit = defineEmits<{
+  (event: 'set-contact-info'): void
+}>()
+
+const chatStore = useChatStore()
+const router = useRouter()
+const { $api, $HTTP_CODE } = useCurrentInstance()
+
+const handleGoSendMessage = debounce(() => {
+  const hasChat = chatStore.chatList.some((chat) => {
+    return chat.reciver_id === props.contact.reciver_id
+  })
+
+  if (!hasChat) {
+    createChat(props.contact)
+  } else {
+    router.push({ path: '/chat/main' })
+  }
+}, 50)
+
+const createChat = async (contact: Contact) => {
+  const { reciver_id } = contact
+  const params = {
+    reciver_id,
+    type: '0',
+  }
+
+  const res = await $api.chat.createChat(params)
+  const { code, message } = res.data
+  if (code === $HTTP_CODE.HTTP_SUCCESS_CODE) {
+    await router.push({ path: '/chat/main' })
+  } else {
+    if (code === 400001002) {
+      await router.push({ path: '/chat/main' })
+    } else {
+      ElMessage.error({
+        message,
+        duration: 3000,
+      })
+    }
+  }
+}
+</script>
 
 <style scoped>
 @import './contact-detail.css';
