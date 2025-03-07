@@ -1,7 +1,7 @@
 <template>
   <div class="chat-item mx-[10px] overflow-hidden">
-    <div v-if="showDate" class="date mx-auto my-[7px] text-center">
-      <span class="inline rounded-sm bg-[#dcdcdc] px-[6px] py-[4px] text-[12px] text-[#fff]">{{
+    <div v-if="showDate" class="date mx-auto my-[7px] rounded-sm text-center dark:bg-gray-900">
+      <span class="inline rounded-sm bg-[#dcdcdc] px-[6px] py-[4px] text-[12px] text-[#fff] dark:bg-gray-900">{{
         $dataHelpers?.formatDate(message.send_time, 'HH:mm')
       }}</span>
     </div>
@@ -15,7 +15,7 @@
           { 'message--me': isMe },
           isMe ? 'bg-[#b2e281]' : 'bg-[#f0f2f4]',
           isMe
-            ? `before:content-[' '] before:absolute before:top-[12px] before:-right-[12px] before:border-[6px] before:border-transparent before:border-l-[#b2e281] before:align-middle`
+            ? `before:content-[' '] before:absolute before:top-[12px] before:-right-[12px] before:border-[6px] before:border-transparent before:border-l-[#b2e281]`
             : `before:content-[' '] before:absolute before:top-[12px] before:right-[100%] before:border-[6px] before:border-transparent before:border-r-[#f0f2f4]`,
         ]"
       >

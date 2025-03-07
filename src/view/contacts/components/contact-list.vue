@@ -104,11 +104,11 @@ defineExpose({
 </script>
 
 <template>
-  <div class="contact-list h-[100vh] w-[300px] border-r border-[#e0e4ea]">
+  <div class="contact-list h-[100vh] w-[300px] border-r border-[#e0e4ea] dark:border-gray-700 dark:bg-gray-900">
     <GcColumn ref="gcColumnRef">
       <template #header>
         <div class="search">
-          <el-input v-model="searchFormMdl.keywords" placeholder="搜索" clearable>
+          <el-input v-model="searchFormMdl.keywords" placeholder="搜索" clearable class="dark:bg-gray-800">
             <template #prefix>
               <el-icon>
                 <Search />
@@ -118,7 +118,7 @@ defineExpose({
         </div>
 
         <div class="oprate">
-          <el-button circle size="small" title="添加好友" @click="emit('add-contact')">
+          <el-button circle size="small" title="添加好友" class="dark:bg-gray-800" @click="emit('add-contact')">
             <template #icon>
               <el-icon>
                 <Plus />
@@ -129,7 +129,7 @@ defineExpose({
       </template>
 
       <template #scroll-header>
-        <div class="list-title mb-[5px] pl-[15px] text-[14px] leading-[45px] text-[#96a1b1]">通讯录</div>
+        <div class="list-title mb-[5px] pl-[15px] text-[14px] leading-[45px] dark:text-gray-400">通讯录</div>
       </template>
       <GcList
         ref="contactListRef"
@@ -147,20 +147,12 @@ defineExpose({
               </div>
               <div class="info flex-1">
                 <div class="info-top flex items-center justify-between">
-                  <p class="remark w-0 flex-1 truncate text-[15px] font-semibold">{{ item.remark }}</p>
+                  <p class="remark w-0 flex-1 truncate text-[15px] font-semibold dark:text-black">
+                    {{ item.remark }}
+                  </p>
                 </div>
-                <p class="text-[12px] text-gray-500">在线</p>
+                <p class="text-[12px] dark:text-gray-400">在线</p>
               </div>
-            </div>
-            <div class="oprate" @click.stop>
-              <el-dropdown :teleported="false" placement="top" @command="handleOparete($event, item)">
-                <el-button link> 删除 </el-button>
-                <template #dropdown>
-                  <el-dropdown-menu>
-                    <el-dropdown-item command="delete">删除</el-dropdown-item>
-                  </el-dropdown-menu>
-                </template>
-              </el-dropdown>
             </div>
           </div>
         </template>

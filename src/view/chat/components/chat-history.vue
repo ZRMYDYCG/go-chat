@@ -5,7 +5,9 @@
         <div class="search">
           <el-input v-model="searchFormMdl.keywords" placeholder="搜索" clearable>
             <template #prefix>
-              <i class="ri-search-line"></i>
+              <el-icon>
+                <Search />
+              </el-icon>
             </template>
           </el-input>
         </div>
@@ -30,7 +32,7 @@
               </div>
               <div class="info flex-1">
                 <div class="info-top flex items-center justify-between">
-                  <p class="remark nickname truncate text-[15px] font-semibold">{{ item.remark }}</p>
+                  <p class="remark nickname truncate text-[15px] font-semibold dark:text-black">{{ item.remark }}</p>
                   <span class="date text-[12px] text-[#404a5b]">{{
                     $dataHelpers.formatDate(item.send_time, 'HH:mm')
                   }}</span>
@@ -46,7 +48,11 @@
             <div class="oprate" @click.stop>
               <el-dropdown :teleported="false" placement="top" @command="handleOparete($event, item)">
                 <el-button link>
-                  <i class="ri-more-fill"></i>
+                  <template #icon>
+                    <el-icon>
+                      <More />
+                    </el-icon>
+                  </template>
                 </el-button>
                 <template #dropdown>
                   <el-dropdown-menu>
@@ -68,6 +74,7 @@ import GcColumn from '@/components/Column/index.vue'
 import GcList from '@/components/List/index.vue'
 import { useCurrentInstance, useLoadMore, usePageList, useSocket } from '@/hooks'
 import useChatStore from '@/store/modules/chat'
+import { Search } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import 'element-plus/theme-chalk/el-message.css'
 import { debounce } from 'lodash-es'
@@ -87,6 +94,11 @@ interface SearchFormModel {
 
 const chatStore = useChatStore()
 
+const gcColumnRef = ref(null)
+const searchFormMdl = ref<SearchFormModel>({
+  keywords: '',
+})
+
 const { $api, $HTTP_CODE, $common } = useCurrentInstance()
 const { formatServerFilePath } = $common
 const {
@@ -102,10 +114,6 @@ const {
 const { socket } = useSocket()
 
 const chatListRef = ref(null)
-const gcColumnRef = ref(null)
-const searchFormMdl = ref<SearchFormModel>({
-  keywords: '',
-})
 
 async function initChatList() {
   await handleRefresh()

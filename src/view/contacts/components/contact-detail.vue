@@ -65,15 +65,23 @@ async function createChat(contact: Contact) {
 </script>
 
 <template>
-  <div class="contact-detail h-[100vh] flex-1">
+  <div class="contact-detail h-[100vh] flex-1 dark:bg-gray-900">
     <div class="contact-detail-wrapper mx-auto w-[400px]">
-      <div class="base-info flex items-center justify-between border-b-[1px] border-gray-200 pt-[100px] pb-[45px]">
+      <div
+        class="base-info flex items-center justify-between border-b-[1px] border-gray-200 pt-[100px] pb-[45px] dark:border-gray-700"
+      >
         <div class="left mr-[30px]">
-          <div class="nickname flex items-center text-[18px]">
+          <div class="nickname flex items-center text-[18px] text-gray-800 dark:text-gray-200">
             <span>{{ contact.remark }}</span>
             <img v-if="String(contact.sex) === '0'" class="sex ml-[5px] w-[18px]" src="@/assets/female.png" alt="" />
             <img v-if="String(contact.sex) === '1'" class="sex ml-[5px] w-[18px]" src="@/assets/male.png" alt="" />
-            <el-button circle size="small" class="ml-[5px]" title="资料设置" @click="$emit('set-contact-info')">
+            <el-button
+              circle
+              size="small"
+              class="ml-[5px] bg-gray-100 dark:bg-gray-800"
+              title="资料设置"
+              @click="$emit('set-contact-info')"
+            >
               <template #icon>
                 <el-icon>
                   <EditPen />
@@ -81,7 +89,7 @@ async function createChat(contact: Contact) {
               </template>
             </el-button>
           </div>
-          <div class="desc mt-[5px] text-[14px] break-all text-[#96a1b1]">{{ contact.desc }}</div>
+          <div class="desc mt-[5px] text-[14px] break-all text-[#96a1b1] dark:text-gray-400">{{ contact.desc }}</div>
         </div>
 
         <div class="right">
@@ -91,19 +99,24 @@ async function createChat(contact: Contact) {
         </div>
       </div>
 
-      <div class="other-info pt-[40px] pb-[30px]">
+      <div class="other-info pt-[40px] pb-[30px] dark:bg-gray-900">
         <div class="info-row flex items-center">
-          <div class="lable mr-[30px] text-[#96a1b1]">昵称</div>
-          <div class="value">{{ contact.nickname }}</div>
+          <div class="lable mr-[30px] text-[#96a1b1] dark:text-gray-400">昵称</div>
+          <div class="value text-gray-800 dark:text-gray-200">{{ contact.nickname }}</div>
         </div>
         <div class="info-row flex items-center">
-          <div class="lable mr-[30px] text-[#96a1b1]">账号</div>
-          <div class="value">{{ contact.account }}</div>
+          <div class="lable mr-[30px] text-[#96a1b1] dark:text-gray-400">账号</div>
+          <div class="value text-gray-800 dark:text-gray-200">{{ contact.account }}</div>
         </div>
       </div>
 
       <div class="oprate mt-[60px]">
-        <el-button type="primary" class="mx-auto !block w-[140px]" @click="handleGoSendMessage">发消息</el-button>
+        <el-button
+          type="primary"
+          class="mx-auto !block w-[140px] bg-blue-500 dark:bg-blue-600"
+          @click="handleGoSendMessage"
+          >发消息</el-button
+        >
       </div>
     </div>
   </div>

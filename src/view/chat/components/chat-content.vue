@@ -1,8 +1,8 @@
 <template>
   <div class="chatting h-[100vh] flex-1">
-    <GcColumn ref="gcColumnRef">
+    <GcColumn ref="gcColumnRef" class="dark:bg-gray-900">
       <template #header>
-        <div v-if="activeChat" class="user flex w-[100%]">
+        <div v-if="activeChat" class="user flex w-[100%] dark:bg-gray-900">
           <div class="avater mr-[15px] h-[45px] w-[45px]">
             <img class="rounded-full" :src="$common.formatServerFilePath(activeChat.avatar)" alt="" />
           </div>
@@ -30,11 +30,11 @@
           </div>
         </div>
       </template>
-      <div class="chat-list px-[15px] py-[30px]">
+      <div class="chat-list px-[15px] py-[30px] dark:bg-gray-900">
         <ChatItem v-for="message in messageList" :key="message.id" :message="message" :is-me="message.is_me"></ChatItem>
       </div>
       <template #footer>
-        <div class="chat-input p-[16px]">
+        <div class="chat-input p-[16px] dark:bg-gray-900">
           <el-input v-model="inputMessage" type="textarea" :rows="3" placeholder="输入消息" resize="none" />
           <div class="chat-input-actions mt-[12px] flex items-center justify-between">
             <div class="left flex items-center">
