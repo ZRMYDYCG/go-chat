@@ -14,7 +14,9 @@
       </template>
 
       <template #scroll-header>
-        <div class="list-title mb-[5px] pl-[15px] text-[14px] leading-[45px] text-[#96a1b1]">聊天记录</div>
+        <div class="list-title bg-white pl-[15px] text-[14px] leading-[45px] text-[#96a1b1] dark:bg-gray-900">
+          聊天记录
+        </div>
       </template>
       <GcList
         ref="chatListRef"
@@ -78,7 +80,7 @@ import { Search } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import 'element-plus/theme-chalk/el-message.css'
 import { debounce } from 'lodash-es'
-import { onActivated, onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 
 interface ChatItem {
   reciver_id: string
@@ -190,17 +192,29 @@ watch(
   },
 )
 
-onActivated(async () => {
-  await initChatList()
-})
-
-onMounted(() => {
+onMounted(async () => {
   useLoadMore({
     type: 'bottom',
     scrollBottomCallback: getPageList,
     container: gcColumnRef.value?.elScrollbar.wrapRef,
     distance: 150,
   })
+  await initChatList()
+})
+
+defineExpose({
+  handleRefresh,
+  searchFormMdl,
+  chatList,
+  chatListRef,
+  gcColumnRef,
+  autoRefreshLastMessage,
+  deleteChat,
+  handleOparete,
+  formatServerFilePath,
+  handleChangeChatListItem,
+  initChatList,
+  chatStore,
 })
 </script>
 

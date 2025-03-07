@@ -2,6 +2,7 @@
 import GcColumn from '@/components/Column/index.vue'
 import GcList from '@/components/List/index.vue'
 import { useCurrentInstance, useLoadMore, usePageList } from '@/hooks'
+import useChatStore from '@/store/modules/chat.ts'
 import { ElMessage } from 'element-plus'
 import { computed, onMounted, ref } from 'vue'
 
@@ -16,6 +17,8 @@ const emit = defineEmits(['change', 'add-contact', 'show-new-contact'])
 
 const { $api, $HTTP_CODE, $common } = useCurrentInstance()
 const { formatServerFilePath } = $common
+
+const chatStore = useChatStore()
 
 const searchFormMdl = ref({
   keywords: '',
@@ -80,7 +83,7 @@ async function deleteContact(contact: Contact) {
       duration: 3000,
     })
 
-    handleRefresh()
+    await handleRefresh()
   } else {
     ElMessage.error({
       message,
@@ -129,7 +132,9 @@ defineExpose({
       </template>
 
       <template #scroll-header>
-        <div class="list-title mb-[5px] pl-[15px] text-[14px] leading-[45px] dark:text-gray-400">通讯录</div>
+        <div class="list-title bg-white pl-[15px] text-[14px] leading-[45px] dark:bg-gray-900 dark:text-gray-400">
+          通讯录
+        </div>
       </template>
       <GcList
         ref="contactListRef"
