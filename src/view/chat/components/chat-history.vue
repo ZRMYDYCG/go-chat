@@ -1,5 +1,5 @@
 <template>
-  <div class="chat-history">
+  <div class="chat-history h-[100vh] w-[300px] border-r border-r-[#e0e4ea]">
     <GcColumn ref="gcColumnRef">
       <template #header>
         <div class="search">
@@ -12,7 +12,7 @@
       </template>
 
       <template #scroll-header>
-        <div class="list-title">聊天记录</div>
+        <div class="list-title mb-[5px] pl-[15px] text-[14px] leading-[45px] text-[#96a1b1]">聊天记录</div>
       </template>
       <GcList
         ref="chatListRef"
@@ -25,17 +25,19 @@
         <template #default="{ item }">
           <div class="chat-item flex w-[100%]">
             <div class="user flex w-[100%] items-center">
-              <div class="avater">
-                <img :src="formatServerFilePath(item.avatar)" alt="头像" />
+              <div class="avater mr-[15px] h-[45px] w-[45px] shrink-0">
+                <img class="rounded-full" :src="formatServerFilePath(item.avatar)" alt="头像" />
               </div>
-              <div class="info">
+              <div class="info flex-1">
                 <div class="info-top flex items-center justify-between">
-                  <p class="remark truncate">{{ item.remark }}</p>
-                  <span class="date">{{ $dataHelpers.formatDate(item.send_time, 'HH:mm') }}</span>
+                  <p class="remark nickname truncate text-[15px] font-semibold">{{ item.remark }}</p>
+                  <span class="date text-[12px] text-[#404a5b]">{{
+                    $dataHelpers.formatDate(item.send_time, 'HH:mm')
+                  }}</span>
                 </div>
 
-                <div class="info-bottom flex">
-                  <p class="last-message truncate">
+                <div class="info-bottom mt-[5px] flex">
+                  <p class="last-message w-0 flex-1 truncate text-[13px] text-[#404a5b]">
                     {{ item.last_message }}
                   </p>
                 </div>
@@ -184,7 +186,7 @@ const deleteChat = async (chat: ChatItem) => {
       message,
       duration: 3000,
     })
-    handleRefresh()
+    await handleRefresh()
   } else {
     ElMessage.error({
       message,
@@ -195,13 +197,7 @@ const deleteChat = async (chat: ChatItem) => {
 </script>
 
 <style scoped>
-.chat-history {
-  width: 300px;
-  height: 100vh;
-  border-right: 1px solid #e0e4ea;
-}
-
-.chat-history :deep(.gc-column .gc-column__header) {
+:deep(.gc-column .gc-column__header) {
   display: flex;
   align-items: center;
   height: 70px;
@@ -209,51 +205,7 @@ const deleteChat = async (chat: ChatItem) => {
   border-bottom: 1px solid #e0e4ea;
 }
 
-.chat-history :deep(.gc-column .list-title) {
-  font-size: 14px;
-  color: #96a1b1;
-  line-height: 45px;
-  padding-left: 15px;
-  margin-bottom: 5px;
-}
-
-.chat-history :deep(.gc-column .el-scrollbar .gc-list) {
+:deep(.gc-column .el-scrollbar .gc-list) {
   padding-bottom: 30px;
-}
-
-.chat-history :deep(.gc-column .el-scrollbar .gc-list .gc-list__item .chat-item .user .avater) {
-  flex-shrink: 0;
-  width: 45px;
-  height: 45px;
-  margin-right: 15px;
-}
-
-.chat-history :deep(.gc-column .el-scrollbar .gc-list .gc-list__item .chat-item .user .avater img) {
-  border-radius: 50%;
-}
-
-.chat-history :deep(.gc-column .el-scrollbar .gc-list .gc-list__item .chat-item .user .info) {
-  flex: 1;
-}
-
-.chat-history :deep(.gc-column .el-scrollbar .gc-list .gc-list__item .chat-item .user .info-top .nickname) {
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.chat-history :deep(.gc-column .el-scrollbar .gc-list .gc-list__item .chat-item .user .info-top .date) {
-  color: #404a5b;
-  font-size: 12px;
-}
-
-.chat-history :deep(.gc-column .el-scrollbar .gc-list .gc-list__item .chat-item .user .info-bottom) {
-  margin-top: 5px;
-}
-
-.chat-history :deep(.gc-column .el-scrollbar .gc-list .gc-list__item .chat-item .user .info-bottom .last-message) {
-  width: 0;
-  flex: 1;
-  font-size: 13px;
-  color: #404a5b;
 }
 </style>

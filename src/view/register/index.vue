@@ -1,16 +1,16 @@
 <template>
-  <div class="regist">
+  <div class="regist flex justify-center p-[150px] pb-[30px]">
     <el-form
       ref="registerFormRef"
       :model="formMdl"
       :rules="rules"
       label-position="left"
       label-width="0px"
-      class="regist-container"
+      class="regist-container w-[330px] bg-transparent"
     >
-      <div class="logo">
-        <img src="@/assets/logo.png" alt="logo" />
-        <h3>LightChat</h3>
+      <div class="logo mx-auto mb-[10px] text-center">
+        <img class="mr-[6px] inline-block h-[60px] align-middle" src="@/assets/logo.png" alt="logo" />
+        <h3 class="text-[20px]">LightChat</h3>
       </div>
 
       <el-form-item prop="account">
@@ -40,13 +40,13 @@
           type="primary"
           size="large"
           plain
-          class="regist-btn"
+          class="regist-btn mt-[30px] w-full"
           :loading="loading"
           @click.prevent="handleRegister"
         >
           立即注册
         </el-button>
-        <div class="go-login flex-1">
+        <div class="go-login flex-1 text-[12px]">
           <router-link to="/login" class="float-right"> 已有账号，去登录 </router-link>
         </div>
       </el-form-item>
@@ -133,50 +133,4 @@ const handleRegister = async () => {
 }
 </script>
 
-<style scoped>
-.regist {
-  display: flex;
-  justify-content: center;
-  box-sizing: border-box;
-  padding: 150px 150px 30px;
-}
-
-.regist-container {
-  width: 330px;
-  background-color: transparent;
-}
-
-.regist-container .logo {
-  text-align: center;
-  margin: 0 auto 40px auto;
-}
-
-.regist-container .logo img {
-  display: inline-block;
-  height: 60px;
-  margin-right: 6px;
-  vertical-align: middle;
-}
-
-.regist-container .logo h3 {
-  color: rgba(0, 0, 0, 0.85);
-  font-size: 20px;
-}
-
-.regist-btn {
-  width: 100%;
-  margin-top: 30px;
-}
-
-.go-login {
-  font-size: 12px;
-}
-
-.float-right {
-  float: right;
-}
-
-.flex-1 {
-  flex: 1;
-}
-</style>
+<style scoped></style>

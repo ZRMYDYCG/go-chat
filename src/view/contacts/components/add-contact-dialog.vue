@@ -1,54 +1,3 @@
-<template>
-  <el-dialog
-    v-model="dialogVisible"
-    title="添加好友"
-    width="500"
-    :modal="false"
-    :close-on-click-modal="true"
-    @closed="handleClosed"
-  >
-    <GcColumn ref="gcColumnRef" v-loading="loading" class="!h-[400px]">
-      <template #header>
-        <el-form ref="searchFormRef" :model="searchFormMdl" class="search" @submit.prevent="handleSearchFriend">
-          <el-form-item prop="account">
-            <el-input v-model="searchFormMdl.account" placeholder="搜索" clearable>
-              <template #prefix>
-                <i class="ri-search-line"></i>
-              </template>
-            </el-input>
-          </el-form-item>
-        </el-form>
-      </template>
-
-      <GcList
-        ref="contactListRef"
-        :list="contactList"
-        :options="{
-          key: 'user_id',
-        }"
-      >
-        <template #default="{ item }">
-          <div class="contact-item flex w-[100%]">
-            <div class="user flex w-[100%] items-center">
-              <div class="avater">
-                <img :src="item.avatar" alt="" />
-              </div>
-              <div class="info">
-                <div class="info-top flex items-center justify-between">
-                  <p class="nickname truncate">{{ item.nickname }}</p>
-                </div>
-              </div>
-              <div class="oprate">
-                <el-button size="small" @click="handleAdd(item)">加为好友</el-button>
-              </div>
-            </div>
-          </div>
-        </template>
-      </GcList>
-    </GcColumn>
-  </el-dialog>
-</template>
-
 <script setup lang="ts">
 import GcColumn from '@/components/Column/index.vue'
 import GcList from '@/components/List/index.vue'
@@ -178,6 +127,70 @@ defineExpose({
 })
 </script>
 
+<template>
+  <el-dialog
+    v-model="dialogVisible"
+    title="添加好友"
+    width="500"
+    :modal="false"
+    :close-on-click-modal="true"
+    @closed="handleClosed"
+  >
+    <GcColumn ref="gcColumnRef" v-loading="loading" class="!h-[400px]">
+      <template #header>
+        <el-form
+          ref="searchFormRef"
+          :model="searchFormMdl"
+          class="search mb-[15px]"
+          @submit.prevent="handleSearchFriend"
+        >
+          <el-form-item prop="account">
+            <el-input v-model="searchFormMdl.account" placeholder="搜索" clearable>
+              <template #prefix>
+                <el-icon>
+                  <Search />
+                </el-icon>
+              </template>
+            </el-input>
+          </el-form-item>
+        </el-form>
+      </template>
+
+      <GcList
+        ref="contactListRef"
+        :list="contactList"
+        :options="{
+          key: 'user_id',
+        }"
+      >
+        <template #default="{ item }">
+          <div class="contact-item flex w-[100%]">
+            <div class="user flex w-[100%] items-center">
+              <div class="avater mr-[15px] h-[45px] w-[45px] shrink-0">
+                <img class="rounded-full" :src="item.avatar" alt="" />
+              </div>
+              <div class="info flex-1">
+                <div class="info-top flex items-center justify-between">
+                  <p
+                    class="nickname w-0 flex-1 truncate overflow-hidden text-[15px] font-semibold text-ellipsis whitespace-nowrap"
+                  >
+                    {{ item.nickname }}
+                  </p>
+                </div>
+              </div>
+              <div class="oprate">
+                <el-button size="small" @click="handleAdd(item)">加为好友</el-button>
+              </div>
+            </div>
+          </div>
+        </template>
+      </GcList>
+    </GcColumn>
+  </el-dialog>
+</template>
+
 <style scoped>
-@import './add-contact-dialog.css';
+:deep(.el-scrollbar .gc-list) {
+  padding-bottom: 30px;
+}
 </style>

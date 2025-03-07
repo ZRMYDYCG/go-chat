@@ -1,40 +1,42 @@
 <template>
-  <div class="contact-detail">
-    <div class="contact-detail-wrapper">
-      <div class="base-info flex items-center justify-between">
-        <div class="left">
-          <div class="nickname flex items-center">
+  <div class="contact-detail h-[100vh] flex-1">
+    <div class="contact-detail-wrapper mx-auto w-[400px]">
+      <div class="base-info flex items-center justify-between border-b-[1px] border-gray-200 pt-[100px] pb-[45px]">
+        <div class="left mr-[30px]">
+          <div class="nickname flex items-center text-[18px]">
             <span>{{ contact.remark }}</span>
-            <img v-if="String(contact.sex) === '0'" class="sex" src="@/assets/female.png" alt="" />
-            <img v-if="String(contact.sex) === '1'" class="sex" src="@/assets/male.png" alt="" />
+            <img v-if="String(contact.sex) === '0'" class="sex ml-[5px] w-[18px]" src="@/assets/female.png" alt="" />
+            <img v-if="String(contact.sex) === '1'" class="sex ml-[5px] w-[18px]" src="@/assets/male.png" alt="" />
             <el-button circle size="small" class="ml-[5px]" title="资料设置" @click="$emit('set-contact-info')">
               <template #icon>
-                <el-icon><EditPen /></el-icon>
+                <el-icon>
+                  <EditPen />
+                </el-icon>
               </template>
             </el-button>
           </div>
-          <div class="desc">{{ contact.desc }}</div>
+          <div class="desc mt-[5px] text-[14px] break-all text-[#96a1b1]">{{ contact.desc }}</div>
         </div>
 
         <div class="right">
-          <div class="avater">
-            <img :src="$common.formatServerFilePath(contact.avatar)" />
+          <div class="avater h-[45px] w-[45px] shrink-0">
+            <img class="rounded-full" :src="$common.formatServerFilePath(contact.avatar)" />
           </div>
         </div>
       </div>
 
-      <div class="other-info">
+      <div class="other-info pt-[40px] pb-[30px]">
         <div class="info-row flex items-center">
-          <div class="lable">昵称</div>
+          <div class="lable mr-[30px] text-[#96a1b1]">昵称</div>
           <div class="value">{{ contact.nickname }}</div>
         </div>
         <div class="info-row flex items-center">
-          <div class="lable">账号</div>
+          <div class="lable mr-[30px] text-[#96a1b1]">账号</div>
           <div class="value">{{ contact.account }}</div>
         </div>
       </div>
 
-      <div class="oprate">
+      <div class="oprate mt-[60px]">
         <el-button type="primary" class="mx-auto !block w-[140px]" @click="handleGoSendMessage">发消息</el-button>
       </div>
     </div>
@@ -107,6 +109,4 @@ const createChat = async (contact: Contact) => {
 }
 </script>
 
-<style scoped>
-@import './contact-detail.css';
-</style>
+<style scoped></style>

@@ -1,17 +1,17 @@
 <template>
-  <div class="chatting">
+  <div class="chatting h-[100vh] flex-1">
     <GcColumn ref="gcColumnRef">
       <template #header>
         <div v-if="activeChat" class="user flex w-[100%]">
-          <div class="avater">
-            <img :src="$common.formatServerFilePath(activeChat.avatar)" alt="" />
+          <div class="avater mr-[15px] h-[45px] w-[45px]">
+            <img class="rounded-full" :src="$common.formatServerFilePath(activeChat.avatar)" alt="" />
           </div>
-          <div class="info flex items-center justify-between">
+          <div class="info flex flex-1 items-center justify-between">
             <div>
               <div class="info-top flex items-center justify-between">
-                <p class="nickname">{{ activeChat?.remark }}</p>
+                <p class="nickname text-[15px]">{{ activeChat?.remark }}</p>
               </div>
-              <div class="info-bottom flex items-center gap-2">
+              <div class="info-bottom flex items-center gap-2 text-[12px] text-[#96a1b1]">
                 <span class="h-[10px] w-[10px] rounded-full bg-green-500"></span>
                 <p class="desc">在线</p>
               </div>
@@ -23,19 +23,21 @@
               <el-icon>
                 <VideoCamera />
               </el-icon>
-              <el-icon> <More /> </el-icon>
+              <el-icon>
+                <More />
+              </el-icon>
             </div>
           </div>
         </div>
       </template>
-      <div class="chat-list">
+      <div class="chat-list px-[15px] py-[30px]">
         <ChatItem v-for="message in messageList" :key="message.id" :message="message" :is-me="message.is_me"></ChatItem>
       </div>
       <template #footer>
-        <div class="chat-input">
+        <div class="chat-input p-[16px]">
           <el-input v-model="inputMessage" type="textarea" :rows="3" placeholder="输入消息" resize="none" />
-          <div class="chat-input-actions">
-            <div class="left">
+          <div class="chat-input-actions mt-[12px] flex items-center justify-between">
+            <div class="left flex items-center">
               <el-button :icon="Picture" circle plain />
               <el-button :icon="Orange" circle plain />
             </div>
@@ -187,81 +189,11 @@ socket.on('chat-1v1-to-client', (message: MessageItem) => {
 </script>
 
 <style scoped>
-.chatting {
-  flex: 1;
-  height: 100vh;
-}
-
-.chatting :deep(.gc-column__header) {
+:deep(.gc-column__header) {
   display: flex;
   align-items: center;
   height: 70px;
   padding-left: 15px;
   border-bottom: 1px solid #e0e4ea;
-}
-
-.chatting :deep(.gc-column__header .user .avater) {
-  width: 45px;
-  height: 45px;
-  margin-right: 15px;
-}
-
-.chatting :deep(.gc-column__header .user .avater img) {
-  border-radius: 50%;
-}
-
-.chatting :deep(.gc-column__header .user .info) {
-  flex: 1;
-}
-
-.chatting :deep(.gc-column__header .user .info-top .nickname) {
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.chatting :deep(.gc-column__header .user .info-bottom) {
-  font-size: 12px;
-  color: #96a1b1;
-}
-
-.chatting :deep(.el-scrollbar .chat-list) {
-  padding: 30px 15px;
-}
-
-.chatting :deep(.gc-column__footer) {
-  //padding: 15px;
-}
-
-.chat-input {
-  padding: 16px; /* 增加填充以提升输入区域的布局 */
-}
-
-.chat-input .input-actions {
-  display: flex;
-  gap: 8px;
-  padding: 8px 0;
-}
-
-.chat-input .chat-input-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 12px;
-}
-
-.chat-input .chat-input-actions .left {
-  display: flex;
-  align-items: center;
-}
-
-.chat-input .chat-input-actions .left i {
-  margin-right: 20px;
-  font-size: 16px;
-  color: #eee;
-  cursor: pointer;
-}
-
-.chat-input .chat-input-actions el-button {
-  min-width: 80px;
 }
 </style>

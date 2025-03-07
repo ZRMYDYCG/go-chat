@@ -1,16 +1,16 @@
 <template>
-  <div class="login">
+  <div class="login flex justify-center p-[150px] pb-[30px]">
     <el-form
       ref="loginFormRef"
       :model="formMdl"
       :rules="rules"
       label-position="left"
       label-width="0px"
-      class="login-container"
+      class="login-container w-[330px] bg-transparent"
     >
-      <div class="logo">
-        <img src="/logo.svg" alt="logo" />
-        <h3>LightChat</h3>
+      <div class="logo mx-auto mb-[10px] text-center">
+        <img class="vertical-align mr-[6px] inline-block h-[60px]" src="/logo.svg" alt="logo" />
+        <h3 class="text-[20px]">LightChat</h3>
       </div>
 
       <el-form-item prop="account">
@@ -37,7 +37,13 @@
         </el-input>
       </el-form-item>
       <el-form-item>
-        <el-button class="login-btn" type="primary" size="large" :loading="loading" @click.prevent="handleLogin">
+        <el-button
+          class="login-btn mt-[30px] w-full"
+          type="primary"
+          size="large"
+          :loading="loading"
+          @click.prevent="handleLogin"
+        >
           立即登录
         </el-button>
       </el-form-item>
@@ -107,38 +113,4 @@ const handleLogin = async () => {
 }
 </script>
 
-<style>
-.login {
-  display: flex;
-  justify-content: center;
-  box-sizing: border-box;
-  padding: 150px 150px 30px;
-}
-
-.login-container {
-  width: 330px;
-  background-color: transparent;
-}
-
-.login-container .logo {
-  text-align: center;
-  margin: 0 auto 40px auto;
-}
-
-.login-container .logo img {
-  display: inline-block;
-  height: 60px;
-  margin-right: 6px;
-  vertical-align: middle;
-}
-
-.login-container .logo h3 {
-  color: rgba(0, 0, 0, 0.85);
-  font-size: 20px;
-}
-
-.login-container .login-btn {
-  width: 100%;
-  margin-top: 30px;
-}
-</style>
+<style scoped></style>

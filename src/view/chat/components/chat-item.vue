@@ -1,17 +1,27 @@
 <template>
-  <div class="chat-item" :class="{ 'chat-item--me': isMe }">
-    <div v-if="showDate" class="date">
-      <span>{{ $dataHelpers.formatDate(message.send_time, 'HH:mm') }}</span>
+  <div class="chat-item mx-[10px] overflow-hidden">
+    <div v-if="showDate" class="date mx-auto my-[7px] text-center">
+      <span class="inline rounded-sm bg-[#dcdcdc] px-[6px] py-[4px] text-[12px] text-[#fff]">{{
+        $dataHelpers?.formatDate(message.send_time, 'HH:mm')
+      }}</span>
     </div>
-
     <div class="chat-data" :class="{ 'flex justify-end': isMe }">
-      <div v-if="!isMe" class="avater float-left mr-[15px]">
+      <div v-if="!isMe" class="avatar float-left mr-[15px] h-[40px] w-[40px] shrink-0">
         <img :src="formatServerFilePath(message.avatar)" alt="" />
       </div>
-      <div class="message relative inline-block" :class="{ 'message--me': isMe }">
+      <div
+        class="message relative inline-block min-h-[36px] max-w-[330px] rounded-sm px-[10px] py-[6px] text-[14px] leading-[24px] break-all"
+        :class="[
+          { 'message--me': isMe },
+          isMe ? 'bg-[#b2e281]' : 'bg-[#f0f2f4]',
+          isMe
+            ? `before:content-[' '] before:absolute before:top-[12px] before:-right-[12px] before:border-[6px] before:border-transparent before:border-l-[#b2e281] before:align-middle`
+            : `before:content-[' '] before:absolute before:top-[12px] before:right-[100%] before:border-[6px] before:border-transparent before:border-r-[#f0f2f4]`,
+        ]"
+      >
         {{ message.content }}
       </div>
-      <div v-if="isMe" class="avater float-right ml-[15px]">
+      <div v-if="isMe" class="avatar float-right ml-[15px] h-[40px] w-[40px] shrink-0">
         <img :src="formatServerFilePath(message.avatar)" alt="" />
       </div>
     </div>
@@ -34,7 +44,7 @@ interface Message {
 
 const currentInstance = useCurrentInstance()
 
-const { $common } = currentInstance.proxy
+const { $common, $dataHelpers } = currentInstance.proxy
 
 const { formatServerFilePath } = $common
 
@@ -54,61 +64,4 @@ const props = defineProps({
 })
 </script>
 
-<style scoped>
-.chat-item {
-  margin: 10px 0;
-  overflow: hidden;
-}
-.chat-item .date {
-  text-align: center;
-  margin: 7px auto;
-}
-.chat-item .date span {
-  display: inline-block;
-  padding: 4px 6px;
-  color: #fff;
-  font-size: 12px;
-  border-radius: 3px;
-  background-color: #dcdcdc;
-}
-
-.chat-item .chat-data .avater {
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-}
-.chat-item .chat-data .avater img {
-  border-radius: 50%;
-}
-
-.chat-item .chat-data .message {
-  display: inline-block;
-  position: relative;
-  padding: 6px 10px;
-  max-width: 330px;
-  min-height: 36px;
-  line-height: 24px;
-  font-size: 14px;
-  word-break: break-all;
-  background-color: #f0f2f4;
-  border-radius: 4px;
-}
-.chat-item .chat-data .message::before {
-  content: ' ';
-  position: absolute;
-  top: 12px;
-  right: 100%;
-  border: 6px solid transparent;
-  border-right-color: #f0f2f4;
-}
-
-.chat-item .chat-data .message.message--me {
-  background-color: #b2e281;
-}
-.chat-item .chat-data .message.message--me::before {
-  right: -12px;
-  vertical-align: middle;
-  border-right-color: transparent;
-  border-left-color: #b2e281;
-}
-</style>
+<style scoped></style>

@@ -21,6 +21,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import { useCurrentInstance } from '@/hooks'
 import { get as getObjectAttrValue } from 'lodash'
@@ -126,6 +127,7 @@ export default {
   },
 }
 </script>
+
 <style scoped>
 .gc-list .gc-list__item {
   display: flex;
@@ -135,6 +137,7 @@ export default {
   border-bottom: 1px solid #f7f7f7;
   border-radius: 10px;
   transition: background 0.3s;
+  color: #333;
 }
 
 .gc-list .gc-list__item:hover,

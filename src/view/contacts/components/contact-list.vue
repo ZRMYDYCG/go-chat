@@ -104,7 +104,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="contact-list">
+  <div class="contact-list h-[100vh] w-[300px] border-r border-[#e0e4ea]">
     <GcColumn ref="gcColumnRef">
       <template #header>
         <div class="search">
@@ -129,7 +129,7 @@ defineExpose({
       </template>
 
       <template #scroll-header>
-        <div class="list-title">通讯录</div>
+        <div class="list-title mb-[5px] pl-[15px] text-[14px] leading-[45px] text-[#96a1b1]">通讯录</div>
       </template>
       <GcList
         ref="contactListRef"
@@ -142,13 +142,14 @@ defineExpose({
         <template #default="{ item }">
           <div class="contact-item flex w-[100%]">
             <div class="user flex w-[100%] items-center">
-              <div class="avater">
-                <img :src="formatServerFilePath(item.avatar)" alt="" />
+              <div class="avater mr-[15px] h-[45px] w-[45px] shrink-0">
+                <img class="rounded-full" :src="formatServerFilePath(item.avatar)" alt="" />
               </div>
-              <div class="info">
+              <div class="info flex-1">
                 <div class="info-top flex items-center justify-between">
-                  <p class="remark truncate">{{ item.remark }}</p>
+                  <p class="remark w-0 flex-1 truncate text-[15px] font-semibold">{{ item.remark }}</p>
                 </div>
+                <p class="text-[12px] text-gray-500">在线</p>
               </div>
             </div>
             <div class="oprate" @click.stop>
@@ -169,5 +170,16 @@ defineExpose({
 </template>
 
 <style scoped>
-@import './contact-list.css';
+:deep(.gc-column__header) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+  padding: 15px;
+  border-bottom: 1px solid #e0e4ea;
+}
+
+:deep(.el-scrollbar .gc-list) {
+  padding-bottom: 30px;
+}
 </style>
