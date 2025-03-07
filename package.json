@@ -1,7 +1,7 @@
 {
   "name": "llm-mini-client",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,7 +10,8 @@
     "ts": "vue-tsc -b",
     "lint": "eslint src --fix --ext .js,.ts,.vue --report-unused-disable-directives --max-warnings 0",
     "prepare": "husky install",
-    "commit": "git-cz"
+    "commit": "git-cz",
+    "release": "release-it"
   },
   "husky": {
     "hooks": {
@@ -49,6 +50,7 @@
   "devDependencies": {
     "@commitlint/cli": "19.2.0",
     "@commitlint/config-conventional": "19.1.0",
+    "@release-it/conventional-changelog": "^10.0.0",
     "@types/lodash-es": "^4.17.12",
     "@types/mockjs": "^1.0.10",
     "@types/node": "^22.13.8",
@@ -68,6 +70,7 @@
     "prettier": "^3.2.4",
     "prettier-plugin-organize-imports": "^4.1.0",
     "prettier-plugin-tailwindcss": "^0.6.11",
+    "release-it": "^18.1.2",
     "typescript": "~5.7.2",
     "unplugin-auto-import": "^19.1.1",
     "unplugin-vue-components": "^28.4.1",
