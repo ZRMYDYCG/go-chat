@@ -48,7 +48,7 @@ onMounted(() => {
   })
 })
 
-const handleChangeContactListItem = (contactId: string, contact: Contact) => {
+function handleChangeContactListItem(contactId: string, contact: Contact) {
   emit('change', contactId, contact)
 }
 
@@ -58,15 +58,15 @@ const filterContactList = computed(() => {
   })
 })
 
-const handleOparete = (command: string, contact: Contact) => {
+async function handleOparete(command: string, contact: Contact) {
   switch (command) {
     case 'delete':
-      deleteContact(contact)
+      await deleteContact(contact)
       break
   }
 }
 
-const deleteContact = async (contact: Contact) => {
+async function deleteContact(contact: Contact) {
   const { id } = contact
 
   const params = {

@@ -85,18 +85,10 @@ interface SearchFormModel {
   keywords: string
 }
 
+const chatStore = useChatStore()
+
 const { $api, $HTTP_CODE, $common } = useCurrentInstance()
 const { formatServerFilePath } = $common
-const chatStore = useChatStore()
-const { socket } = useSocket()
-
-const searchFormMdl = ref<SearchFormModel>({
-  keywords: '',
-})
-
-const chatListRef = ref(null)
-const gcColumnRef = ref(null)
-
 const {
   list: chatList,
   loadding,
@@ -107,42 +99,22 @@ const {
   searchParams: searchFormMdl,
 })
 
-onActivated(async () => {
-  await initChatList()
+const { socket } = useSocket()
+
+const chatListRef = ref(null)
+const gcColumnRef = ref(null)
+const searchFormMdl = ref<SearchFormModel>({
+  keywords: '',
 })
 
-const initChatList = async () => {
+async function initChatList() {
   await handleRefresh()
   if (chatList.value.length) {
     chatListRef.value?.handleChangeItem(chatList.value[0])
   }
 }
 
-onMounted(() => {
-  useLoadMore({
-    type: 'bottom',
-    scrollBottomCallback: getPageList,
-    container: gcColumnRef.value?.elScrollbar.wrapRef,
-    distance: 150,
-  })
-})
-
-watch(
-  () => chatList.value,
-  () => {
-    chatStore.updateChatList(chatList.value)
-  },
-  {
-    immediate: true,
-    deep: true,
-  },
-)
-
-socket.on('chat-1v1-to-client', (message: any) => {
-  autoRefreshLastMessage(message)
-})
-
-const autoRefreshLastMessage = (message: any, userIdKey = 'user_id') => {
+function autoRefreshLastMessage(message: any, userIdKey = 'user_id') {
   const { content } = message
 
   chatList.value = chatList.value.map((chat) => {
@@ -153,15 +125,11 @@ const autoRefreshLastMessage = (message: any, userIdKey = 'user_id') => {
   })
 }
 
-const handleChangeChatListItem = debounce((chatId: string, chat: ChatItem) => {
+const handleChangeChatListItem = debounce(function (chatId, chat) {
   chatStore.updateActiveChatId(chatId)
 }, 300)
 
-socket.on('server:auto-create-chat', () => {
-  handleRefresh()
-})
-
-const handleOparete = (command: string, chat: ChatItem) => {
+function handleOparete(command: string, chat: ChatItem) {
   switch (command) {
     case 'delete':
       deleteChat(chat)
@@ -172,7 +140,7 @@ const handleOparete = (command: string, chat: ChatItem) => {
   }
 }
 
-const deleteChat = async (chat: ChatItem) => {
+async function deleteChat(chat: ChatItem) {
   const { id: chat_id, reciver_id } = chat
   const params = {
     chat_id,
@@ -194,6 +162,38 @@ const deleteChat = async (chat: ChatItem) => {
     })
   }
 }
+
+socket.on('server:auto-create-chat', () => {
+  handleRefresh()
+})
+
+socket.on('chat-1v1-to-client', (message: any) => {
+  autoRefreshLastMessage(message)
+})
+
+watch(
+  () => chatList.value,
+  () => {
+    chatStore.updateChatList(chatList.value)
+  },
+  {
+    immediate: true,
+    deep: true,
+  },
+)
+
+onActivated(async () => {
+  await initChatList()
+})
+
+onMounted(() => {
+  useLoadMore({
+    type: 'bottom',
+    scrollBottomCallback: getPageList,
+    container: gcColumnRef.value?.elScrollbar.wrapRef,
+    distance: 150,
+  })
+})
 </script>
 
 <style scoped>

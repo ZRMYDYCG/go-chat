@@ -1,3 +1,69 @@
+<script setup lang="ts">
+import { useCurrentInstance } from '@/hooks'
+import useChatStore from '@/store/modules/chat'
+import { ElMessage } from 'element-plus'
+import { debounce } from 'lodash-es'
+import { defineEmits, defineProps } from 'vue'
+import { useRouter } from 'vue-router'
+
+interface Contact {
+  remark: string
+  sex: string
+  desc: string
+  avatar: string
+  nickname: string
+  account: string
+  reciver_id: string
+}
+
+const props = defineProps<{
+  contact: Contact
+}>()
+
+const emit = defineEmits<{
+  (event: 'set-contact-info'): void
+}>()
+
+const chatStore = useChatStore()
+const router = useRouter()
+const { $api, $HTTP_CODE } = useCurrentInstance()
+
+const handleGoSendMessage = debounce(function () {
+  const hasChat = chatStore.chatList.some((chat) => {
+    return chat.reciver_id === props.contact.reciver_id
+  })
+
+  if (!hasChat) {
+    createChat(props.contact)
+  } else {
+    router.push({ path: '/chat/main' })
+  }
+}, 50)
+
+async function createChat(contact: Contact) {
+  const { reciver_id } = contact
+  const params = {
+    reciver_id,
+    type: '0',
+  }
+
+  const res = await $api.chat.createChat(params)
+  const { code, message } = res.data
+  if (code === $HTTP_CODE.HTTP_SUCCESS_CODE) {
+    await router.push({ path: '/chat/main' })
+  } else {
+    if (code === 400001002) {
+      await router.push({ path: '/chat/main' })
+    } else {
+      ElMessage.error({
+        message,
+        duration: 3000,
+      })
+    }
+  }
+}
+</script>
+
 <template>
   <div class="contact-detail h-[100vh] flex-1">
     <div class="contact-detail-wrapper mx-auto w-[400px]">
@@ -42,71 +108,5 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { useCurrentInstance } from '@/hooks'
-import useChatStore from '@/store/modules/chat'
-import { ElMessage } from 'element-plus'
-import { debounce } from 'lodash-es'
-import { defineEmits, defineProps } from 'vue'
-import { useRouter } from 'vue-router'
-
-interface Contact {
-  remark: string
-  sex: string
-  desc: string
-  avatar: string
-  nickname: string
-  account: string
-  reciver_id: string
-}
-
-const props = defineProps<{
-  contact: Contact
-}>()
-
-const emit = defineEmits<{
-  (event: 'set-contact-info'): void
-}>()
-
-const chatStore = useChatStore()
-const router = useRouter()
-const { $api, $HTTP_CODE } = useCurrentInstance()
-
-const handleGoSendMessage = debounce(() => {
-  const hasChat = chatStore.chatList.some((chat) => {
-    return chat.reciver_id === props.contact.reciver_id
-  })
-
-  if (!hasChat) {
-    createChat(props.contact)
-  } else {
-    router.push({ path: '/chat/main' })
-  }
-}, 50)
-
-const createChat = async (contact: Contact) => {
-  const { reciver_id } = contact
-  const params = {
-    reciver_id,
-    type: '0',
-  }
-
-  const res = await $api.chat.createChat(params)
-  const { code, message } = res.data
-  if (code === $HTTP_CODE.HTTP_SUCCESS_CODE) {
-    await router.push({ path: '/chat/main' })
-  } else {
-    if (code === 400001002) {
-      await router.push({ path: '/chat/main' })
-    } else {
-      ElMessage.error({
-        message,
-        duration: 3000,
-      })
-    }
-  }
-}
-</script>
 
 <style scoped></style>

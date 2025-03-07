@@ -75,7 +75,7 @@ const formMdl = ref({
   password: '',
 })
 
-const handleLogin = async () => {
+async function handleLogin() {
   if (loading.value) return
 
   const validateStatus = await new Promise<boolean>((resolve) => {

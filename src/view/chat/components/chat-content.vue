@@ -76,19 +76,19 @@ const emit = defineEmits<{
 }>()
 
 const { $api } = useCurrentInstance()
-const chatStore = useChatStore()
 const { socket } = useSocket()
 
-const { activeChat } = toRefs(chatStore)
-
+const chatStore = useChatStore()
 const userStore = useUserStore()
+
+const { activeChat } = toRefs(chatStore)
 
 const searchFormMdl = ref({
   reciver_id: chatStore.activeChat?.reciver_id || '',
   keywords: '',
 })
-
 const inputMessage = ref('')
+const gcColumnRef = ref(null)
 
 // 消息列表
 const {
@@ -102,7 +102,7 @@ const {
   dataAppend: 'start',
 })
 
-const scrollToBottom = () => {
+function scrollToBottom() {
   nextTick(() => {
     const container = gcColumnRef.value?.elScrollbar.wrapRef
     const scrollHeight = container.scrollHeight
@@ -113,7 +113,36 @@ const scrollToBottom = () => {
   })
 }
 
-const gcColumnRef = ref(null)
+async function sendMessage(message: string) {
+  if (message === '') {
+    return false
+  }
+  const item: MessageItem = {
+    id: Date.now().toString(), // 生成一个唯一ID
+    chat_id: chatStore.activeChat?.id || '',
+    user_id: chatStore.activeChat?.user_id || '',
+    content: message,
+    reciver_id: chatStore.activeChat?.reciver_id || '',
+    send_time: formatDate(new Date()),
+    type: '0',
+    is_me: true,
+  }
+  messageList.value.push({ ...item, avatar: userStore.userInfo.avatar || '' })
+
+  // socket发送消息到服务器
+  socket.emit('chat-1v1-to-server', item)
+
+  emit('send-message', item)
+
+  inputMessage.value = ''
+  scrollToBottom()
+}
+
+// 接收socket消息来信
+socket.on('chat-1v1-to-client', (message: MessageItem) => {
+  messageList.value.push(message)
+  scrollToBottom()
+})
 
 watch(
   () => chatStore.activeChat?.reciver_id,
@@ -154,37 +183,6 @@ onMounted(() => {
     container: gcColumnRef.value?.elScrollbar.wrapRef,
     distance: 0,
   })
-})
-
-const sendMessage = async (message: string) => {
-  if (message === '') {
-    return false
-  }
-  const item: MessageItem = {
-    id: Date.now().toString(), // 生成一个唯一ID
-    chat_id: chatStore.activeChat?.id || '',
-    user_id: chatStore.activeChat?.user_id || '',
-    content: message,
-    reciver_id: chatStore.activeChat?.reciver_id || '',
-    send_time: formatDate(new Date()),
-    type: '0',
-    is_me: true,
-  }
-  messageList.value.push({ ...item, avatar: userStore.userInfo.avatar || '' })
-
-  // socket发送消息到服务器
-  socket.emit('chat-1v1-to-server', item)
-
-  emit('send-message', item)
-
-  inputMessage.value = ''
-  scrollToBottom()
-}
-
-// 接收socket消息来信
-socket.on('chat-1v1-to-client', (message: MessageItem) => {
-  messageList.value.push(message)
-  scrollToBottom()
 })
 </script>
 

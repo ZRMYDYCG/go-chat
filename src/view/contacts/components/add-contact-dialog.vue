@@ -37,7 +37,7 @@ const {
   searchParams: searchFormMdl,
 })
 
-const handleSearchFriend = async () => {
+async function handleSearchFriend() {
   loadding.value = true
   const params = {
     ...searchFormMdl.value,
@@ -72,11 +72,11 @@ onMounted(() => {
 })
 
 const createLoading = ref(false)
-const handleAdd = debounce((contact: Contact) => {
+const handleAdd = debounce(function (contact: Contact) {
   createContact(contact)
 }, 50)
 
-const createContact = async (contact: Contact) => {
+async function createContact(contact: Contact) {
   if (createLoading.value) {
     return false
   }
@@ -108,16 +108,16 @@ const createContact = async (contact: Contact) => {
   }
 }
 
-const handleClosed = () => {
+function handleClosed() {
   searchFormRef.value?.resetFields()
   initData()
 }
 
-const open = () => {
+function open() {
   dialogVisible.value = true
 }
 
-const close = () => {
+function close() {
   dialogVisible.value = false
 }
 

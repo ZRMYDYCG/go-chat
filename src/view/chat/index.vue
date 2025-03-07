@@ -6,7 +6,6 @@ import ChatHistory from './components/chat-history.vue'
 <template>
   <div class="chat flex">
     <ChatHistory />
-
     <ChatContent />
   </div>
 </template>

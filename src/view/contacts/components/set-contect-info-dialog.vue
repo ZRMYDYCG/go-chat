@@ -71,11 +71,11 @@ const isNoneValues = computed(() => {
 
 const loadding = ref(false)
 
-const handleSetInfo = () => {
+function handleSetInfo() {
   setContactInfo()
 }
 
-const setContactInfo = async () => {
+async function setContactInfo() {
   loadding.value = true
   const params = {
     ...formMdl.value,
@@ -111,19 +111,24 @@ const setContactInfo = async () => {
 }
 
 // 弹窗关闭
-const handleClosed = () => {
+function handleClosed() {
   if (formRef.value) {
     formRef.value.resetFields()
   }
 }
 
 // 打开弹窗
-const open = () => {
+function open() {
   dialogVisible.value = true
 }
 
 // 关闭弹窗
-const close = () => {
+function close() {
   dialogVisible.value = false
 }
+
+defineExpose({
+  open,
+  close,
+})
 </script>

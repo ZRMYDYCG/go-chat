@@ -39,7 +39,7 @@ import ContactList from './components/contact-list.vue'
 
 // 获取最新选中的好友
 const activeContact = ref<any>(null)
-const handleContactChange = (contactId, contact) => {
+function handleContactChange(contactId, contact) {
   activeContact.value = contact
 }
 
@@ -58,13 +58,13 @@ const { AsyncComponent: AddFriendDialogAsyncComp } = useAsyncComponent({
   },
 })
 
-const handleShowAddFriendDialog = () => {
+function handleShowAddFriendDialog() {
   addFriendDialogAsyncCompTrigger()
   addFriendDialogAsyncCompRef.value?.open()
 }
 
 // 添加好友成功回调
-const handleCreateContactSuccess = () => {
+function handleCreateContactSuccess() {
   contactListRef.value?.handleRefresh()
 }
 
@@ -80,13 +80,13 @@ const { AsyncComponent: SetContactInfoDialogAsyncComp } = useAsyncComponent({
   },
 })
 
-const handleShowSetContactInfoDialog = () => {
+function handleShowSetContactInfoDialog() {
   setContactInfoDialogTrigger()
   setContactInfoDialogRef.value?.open()
 }
 
 // 设置联系人资料成功回调
-const handleSetContactSuccess = () => {
+function handleSetContactSuccess() {
   contactListRef.value?.handleRefresh()
 }
 </script>

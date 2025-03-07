@@ -82,9 +82,7 @@ const formMdl = ref<FormModel>({
   password: '',
 })
 
-// console.log('$api:', $api)
-
-const handleRegister = async () => {
+async function handleRegister() {
   if (loading.value) return
 
   // console.log('formMdl:', formMdl.value)
