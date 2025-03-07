@@ -1,8 +1,9 @@
 <template>
-  <el-popover :width="400" trigger="click">
+  <el-popover :width="400" trigger="click" @show="handlePopoverShow" @hide="handlePopoverHide">
     <template #reference>
-      <!-- 插槽供外部传入触发元素 -->
-      <slot name="trigger"></slot>
+      <div @mousedown.prevent="handleTriggerMouseDown" @click="handleTriggerClick">
+        <slot name="trigger"></slot>
+      </div>
     </template>
 
     <!-- 表情分类标签 -->
@@ -71,7 +72,12 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'select', payload: Emoji): void
+  (e: 'popover-show'): void
+  (e: 'popover-hide'): void
 }>()
+
+const popoverVisible = ref(false)
+let shouldOpen = false
 
 // 标签页配置
 const tabs = [
@@ -239,5 +245,29 @@ const selectedTab = ref<'default' | 'favorite'>('default')
 
 const handleSelect = (emoji: Emoji) => {
   emit('select', emoji)
+}
+
+// 修改后的触发逻辑
+const handleTriggerMouseDown = (e: MouseEvent) => {
+  e.preventDefault()
+  shouldOpen = !popoverVisible.value
+}
+
+const handleTriggerClick = () => {
+  if (shouldOpen) {
+    popoverVisible.value = true
+  }
+}
+
+// 新增popover事件处理
+const handlePopoverShow = () => {
+  // 通知父组件保持焦点
+  emit('popover-show')
+}
+
+const handlePopoverHide = () => {
+  popoverVisible.value = false
+  // 通知父组件恢复焦点（如果需要）
+  emit('popover-hide')
 }
 </script>

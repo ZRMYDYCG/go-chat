@@ -35,11 +35,24 @@
       </div>
       <template #footer>
         <div class="chat-input p-[16px] dark:bg-gray-900">
-          <el-input v-model="inputMessage" type="textarea" :rows="3" placeholder="输入消息" resize="none" />
+          <el-input
+            ref="inputRef"
+            v-model="inputMessage"
+            type="textarea"
+            :rows="3"
+            placeholder="输入消息"
+            resize="none"
+            @blur="handleInputBlur"
+          />
           <div class="chat-input-actions mt-[12px] flex items-center justify-between">
             <div class="left flex items-center">
               <el-button :icon="Picture" circle plain />
-              <EmojiPicker :favorite-emojis="favoriteList" @select="handleEmojiSelect">
+              <EmojiPicker
+                :favorite-emojis="favoriteList"
+                @select="handleEmojiSelect"
+                @popover-show="handlePopoverShow"
+                @popover-hide="handlePopoverHide"
+              >
                 <template #trigger>
                   <el-button :icon="Orange" circle plain />
                 </template>
@@ -55,6 +68,7 @@
 
 <script setup lang="ts">
 import GcColumn from '@/components/Column/index.vue'
+import EmojiPicker from '@/components/EmojiPicker/index.vue'
 import { useCurrentInstance, useLoadMore, usePageList, useSocket } from '@/hooks'
 import useChatStore from '@/store/modules/chat'
 import { useUserStore } from '@/store/modules/user.ts'
@@ -93,6 +107,9 @@ const searchFormMdl = ref({
 })
 const inputMessage = ref('')
 const gcColumnRef = ref(null)
+
+const inputRef = ref<HTMLInputElement>()
+const isInputFocused = ref(false)
 
 // 消息列表
 const {
@@ -153,6 +170,27 @@ const favoriteList = ref([
 
 const handleEmojiSelect = (emoji) => {
   console.log('Selected emoji:', emoji)
+}
+
+// 处理表情弹窗显示时的焦点
+const handlePopoverShow = () => {
+  isInputFocused.value = document.activeElement === inputRef.value
+}
+
+// 处理表情弹窗隐藏时的焦点
+const handlePopoverHide = () => {
+  if (isInputFocused.value) {
+    inputRef.value?.focus()
+  }
+}
+
+// 处理输入框失焦（需要排除弹窗操作）
+const handleInputBlur = (e: FocusEvent) => {
+  // 检查相关目标是否是弹窗内容
+  const popover = document.querySelector('.el-popover')
+  if (popover?.contains(e.relatedTarget as Node)) {
+    inputRef.value?.focus()
+  }
 }
 
 // 接收socket消息来信
