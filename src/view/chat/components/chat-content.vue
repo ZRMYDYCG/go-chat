@@ -39,7 +39,11 @@
           <div class="chat-input-actions mt-[12px] flex items-center justify-between">
             <div class="left flex items-center">
               <el-button :icon="Picture" circle plain />
-              <el-button :icon="Orange" circle plain />
+              <EmojiPicker :favorite-emojis="favoriteList" @select="handleEmojiSelect">
+                <template #trigger>
+                  <el-button :icon="Orange" circle plain />
+                </template>
+              </EmojiPicker>
             </div>
             <el-button type="primary" @click="sendMessage(inputMessage)">发送</el-button>
           </div>
@@ -136,6 +140,19 @@ async function sendMessage(message: string) {
 
   inputMessage.value = ''
   scrollToBottom()
+}
+
+const favoriteList = ref([
+  // 收藏的自定义表情示例
+  {
+    id: 'c1',
+    url: 'https://example.com/emoji1.png',
+    type: 'custom',
+  },
+])
+
+const handleEmojiSelect = (emoji) => {
+  console.log('Selected emoji:', emoji)
 }
 
 // 接收socket消息来信
