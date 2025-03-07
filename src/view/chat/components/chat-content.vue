@@ -45,7 +45,7 @@
             @blur="handleInputBlur"
           />
           <div class="chat-input-actions mt-[12px] flex items-center justify-between">
-            <div class="left flex items-center">
+            <div class="left flex items-center gap-2">
               <el-button :icon="Picture" circle plain />
               <EmojiPicker
                 :favorite-emojis="favoriteList"
@@ -169,7 +169,25 @@ const favoriteList = ref([
 ])
 
 const handleEmojiSelect = (emoji) => {
-  console.log('Selected emoji:', emoji)
+  const textarea = inputRef.value?.textarea
+  if (!textarea) return
+
+  const startPos = textarea.selectionStart
+  const endPos = textarea.selectionEnd
+
+  // 处理文本插入
+  inputMessage.value = inputMessage.value.substring(0, startPos) + emoji.char + inputMessage.value.substring(endPos)
+
+  // 更新光标位置
+  nextTick(() => {
+    const newPos = startPos + emoji.char.length
+    textarea.setSelectionRange(newPos, newPos)
+    textarea.focus()
+
+    // 触发输入更新（某些情况下需要）
+    const event = new Event('input', { bubbles: true })
+    textarea.dispatchEvent(event)
+  })
 }
 
 // 处理表情弹窗显示时的焦点
