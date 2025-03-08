@@ -19,7 +19,6 @@ html body::-webkit-scrollbar-thumb:hover,
 
 body {
     height: 100vh;
-    background-color: #f7faff;
 }
 
 #app {
