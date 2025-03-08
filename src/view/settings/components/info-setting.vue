@@ -12,7 +12,7 @@ const { $common } = currentInstance.proxy
 </script>
 
 <template>
-  <div class="info-setting h-screen w-[40%] bg-gray-100">
+  <div class="info-setting h-screen w-[50%] bg-gray-100">
     <div class="setting-wrapper py-[100px]">
       <!--  用户的基本信息  -->
       <div class="border-b-[1px] border-gray-200 px-[15px] pb-[10px]">
