@@ -1,5 +1,5 @@
 // 请求地址
-export const HTTP_HOST = 'http://localhost:3030/'
+export const HTTP_HOST = 'http://49.232.248.93:3030/'
 
 // 请求超时时长
 export const HTTP_TIMEOUT = 5000

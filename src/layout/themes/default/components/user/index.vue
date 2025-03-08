@@ -1,7 +1,17 @@
 <template>
   <div class="gc-user flex w-full items-center justify-center">
-    <img v-if="userInfo?.avatar" class="h-[40px] w-[40px] rounded-full" :src="userInfo.avatar" alt="用户头像" />
-    <img v-else class="rounder-full h-[40px] w-[40px]" src="@/assets/default_avatar.png" alt="用户头像" />
+    <img
+      v-if="!userInfo?.avatar"
+      src="@/assets/default_avatar.png"
+      class="h-[40px] w-[40px] rounded-full"
+      alt="用户头像"
+    />
+    <img
+      v-else
+      class="rounder-full h-[40px] w-[40px]"
+      :src="$common.formatServerFilePath(userInfo.avatar)"
+      alt="用户头像"
+    />
     <h3 class="ml-[10px] cursor-default text-sm text-nowrap text-gray-600">{{ nickname ? nickname : '未登录' }}</h3>
   </div>
 </template>
