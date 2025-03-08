@@ -13,7 +13,7 @@ export const useSocket = () => {
       () => userStore.token,
       (token) => {
         if (token) {
-          socket = io('http://localhost:3001/', {
+          socket = io('http://49.232.248.93:3001/', {
             auth: {
               token,
             },
