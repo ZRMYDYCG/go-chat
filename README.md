@@ -9,6 +9,8 @@
 
 ![img.png](public/img.png)
 
+![image](https://github.com/user-attachments/assets/0ac18277-fc47-4ae7-abb1-66e62e2c8988)
+
 支持黑夜模式
 
 ![38b116f48998e4656bb4b86351b2c2b](https://github.com/user-attachments/assets/9da59199-77f3-4d50-aaee-7445a1b67fd9)
