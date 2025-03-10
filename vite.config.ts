@@ -1,4 +1,5 @@
 import tailwindcss from '@tailwindcss/vite'
+import legacy from '@vitejs/plugin-legacy'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
 import { visualizer } from 'rollup-plugin-visualizer' // 构建分析工具
@@ -25,7 +26,12 @@ export default defineConfig(({ mode }) => ({
       resolvers: [ElementPlusResolver()],
     }),
     Components({
-      resolvers: [ElementPlusResolver()],
+      resolvers: [
+        ElementPlusResolver({
+          importStyle: 'sass', // 按需加载样式
+          directives: true, // 按需加载指令
+        }),
+      ],
     }),
     // Gzip/Brotli 压缩
     viteCompression({
@@ -49,6 +55,9 @@ export default defineConfig(({ mode }) => ({
       svgo: {
         plugins: [{ removeViewBox: false }],
       },
+    }),
+    legacy({
+      targets: ['defaults', 'not IE 11'],
     }),
   ],
   resolve: {
