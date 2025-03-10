@@ -6,21 +6,18 @@
       @change="handleContactChange"
       @add-contact="handleShowAddFriendDialog"
     ></ContactList>
-
     <!-- 好友详情 -->
     <ContactDetail
       v-if="activeContact"
       :contact="activeContact"
       @set-contact-info="handleShowSetContactInfoDialog"
     ></ContactDetail>
-
     <!-- 添加好友弹窗 -->
     <component
       :is="AddFriendDialogAsyncComp"
       ref="addFriendDialogAsyncCompRef"
       @create-success="handleCreateContactSuccess"
     ></component>
-
     <!-- 设置好友资料弹窗 -->
     <component
       :is="SetContactInfoDialogAsyncComp"

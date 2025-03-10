@@ -9,6 +9,7 @@ import { defineConfig } from 'vite'
 // https://vite.dev/config/
 export default defineConfig({
   server: {
+    // 本地开发代理
     proxy: {
       '/api': {
         target: 'http://49.232.248.93:3030/',
