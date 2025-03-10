@@ -7,6 +7,7 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
 import { defineConfig } from 'vite'
 import viteCompression from 'vite-plugin-compression' // Gzip压缩
+import viteImagemin from 'vite-plugin-imagemin' // 图片压缩
 
 export default defineConfig(({ mode }) => ({
   server: {
@@ -39,6 +40,15 @@ export default defineConfig(({ mode }) => ({
       open: true,
       gzipSize: true,
       brotliSize: true,
+    }),
+    viteImagemin({
+      gifsicle: { optimizationLevel: 3 },
+      optipng: { optimizationLevel: 5 },
+      mozjpeg: { quality: 75 },
+      pngquant: { quality: [0.8, 0.9] },
+      svgo: {
+        plugins: [{ removeViewBox: false }],
+      },
     }),
   ],
   resolve: {
