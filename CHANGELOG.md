@@ -1,5 +1,22 @@
 # Changelog
 
+## <small>1.0.2 (2025-03-10)</small>
+
+* build: 🔨️打包构建进行图片压缩 ([560b7e4](https://github.com/ZRMYDYCG/llm-go-chat-client/commit/560b7e4))
+* build: 🔨️首屏 JS 体积1.2M->350KB ([b1bdb65](https://github.com/ZRMYDYCG/llm-go-chat-client/commit/b1bdb65))
+* build: 🔨️优化打包构建核心配置，采用代码分割策略 ([0fc061e](https://github.com/ZRMYDYCG/llm-go-chat-client/commit/0fc061e))
+* build: 🔨️sass依赖缺失 ([438cef1](https://github.com/ZRMYDYCG/llm-go-chat-client/commit/438cef1))
+* feat: ✨️初始化笔记模块mock ([f5fd7d2](https://github.com/ZRMYDYCG/llm-go-chat-client/commit/f5fd7d2))
+* feat: ✨️添加朋友圈原型 ([392a6ef](https://github.com/ZRMYDYCG/llm-go-chat-client/commit/392a6ef))
+* feat: ✨️新增应用设置原型 ([3eddf25](https://github.com/ZRMYDYCG/llm-go-chat-client/commit/3eddf25))
+* feat: ✨️新增用户信息设置以及展示的原型 ([430be93](https://github.com/ZRMYDYCG/llm-go-chat-client/commit/430be93))
+* feat: ✨️svg图标渲染组件,确定项目图标使用方案 ([a42d10c](https://github.com/ZRMYDYCG/llm-go-chat-client/commit/a42d10c))
+* ci: 📌️vercel添加API重写规则指向服务器地址 ([de484e5](https://github.com/ZRMYDYCG/llm-go-chat-client/commit/de484e5))
+* Update README.md ([622f658](https://github.com/ZRMYDYCG/llm-go-chat-client/commit/622f658))
+* Update README.md ([13a79e0](https://github.com/ZRMYDYCG/llm-go-chat-client/commit/13a79e0))
+* fix: 🪲️用户头像显示异常 ([2eaac54](https://github.com/ZRMYDYCG/llm-go-chat-client/commit/2eaac54))
+* test: 🧪️测试后端服务器接口成功 ([4992f8e](https://github.com/ZRMYDYCG/llm-go-chat-client/commit/4992f8e))
+
 ## <small>1.0.1 (2025-03-07)</small>
 
 * feat: ✨侧边栏开发 ([781a45a](https://github.com/ZRMYDYCG/llm-go-chat-client/commit/781a45a))
