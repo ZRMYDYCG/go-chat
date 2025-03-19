@@ -9,6 +9,30 @@
 
 拉取代码后，直接可以在本地开发，接口部署上去了，本地配置了代理，开发模式下不会跨域，登录用户名：admin、登录密码：123456
 
+代码规范：
+
+如果使用 vscode:
+
+记得安装 eslint prettire stylelint 插件
+
+使用 webstrom:
+
+编译器集成了，记得开启一下
+
+提交代码之前，执行一下 pnpm lint，解决掉这里的问题后再提交代码
+
+tag版本管理：
+
+pnpm release
+
+版本号末尾+1即可
+
+分支规范：
+
+master
+  dev/feature-v1.0.0
+         feature-v1.0.0-[功能模块]
+         
 项目预览:
 
 ![img.png](public/img.png)
