@@ -4,13 +4,10 @@ require('./socket')
 const path = require('path')
 const KoaBody = require('koa-body')
 const router = require('../router')
-const {
-  formValidateErrorHandler: formValidateErrorHandlerMiddleware
-} = require('../middleware/errorHandler')
+const { formValidateErrorHandler: formValidateErrorHandlerMiddleware } = require('../middleware/errorHandler')
 
-const serveStatic = require('koa-static');
-const mount = require('koa-mount');
-
+const serveStatic = require('koa-static')
+const mount = require('koa-mount')
 
 const app = new Koa()
 
@@ -22,8 +19,8 @@ app.use(
       keepExtensions: true,
     },
     parsedMethods: ['POST', 'PUT', 'PATCH', 'DELETE'],
-    returnRawBody: true
-  })
+    returnRawBody: true,
+  }),
 )
 
 // 统一错误处理
