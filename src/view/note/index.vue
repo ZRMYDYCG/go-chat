@@ -1,13 +1,7 @@
-<script setup lang="ts">
-import CreateNote from './components/create-note.vue'
-import NoteDetail from './components/note-detail.vue'
-import NoteList from './components/note-list.vue'
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <NoteList />
-  <NoteDetail />
-  <CreateNote v-if="false" />
+  <div>笔记</div>
 </template>
 
 <style scoped></style>

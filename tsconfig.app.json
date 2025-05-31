@@ -1,6 +1,4 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.dom.json", // 继承自 @vue/tsconfig 的 dom 配置
-
   "compilerOptions": {
     "baseUrl": ".", // 设置解析非相对模块名称的基本目录，默认为当前目录
     "paths": {

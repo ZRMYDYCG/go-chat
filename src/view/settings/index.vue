@@ -1,13 +1,7 @@
-<script setup lang="ts">
-import AppSetting from './components/app-setting.vue'
-import InfoSetting from './components/info-setting.vue'
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <div class="flex">
-    <InfoSetting />
-    <AppSetting />
-  </div>
+  <div class="flex">设置</div>
 </template>
 
 <style scoped></style>

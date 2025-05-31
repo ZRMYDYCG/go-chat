@@ -2,7 +2,7 @@
 import GcColumn from '@/components/Column/index.vue'
 import GcList from '@/components/List/index.vue'
 import { useCurrentInstance, useLoadMore, usePageList } from '@/hooks'
-import { formatServerFilePath } from '@/utils/helper/common.ts'
+import { formatServerFilePath } from '@/utils/helper/common'
 import { ElButton, ElForm, ElInput, ElMessage } from 'element-plus'
 import { debounce } from 'lodash-es'
 import { nextTick, onMounted, ref } from 'vue'
