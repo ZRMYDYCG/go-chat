@@ -11,7 +11,9 @@
     "lint": "eslint src --fix --ext .js,.ts,.vue --report-unused-disable-directives --max-warnings 0",
     "prepare": "husky install",
     "commit": "git-cz",
-    "release": "release-it"
+    "release": "release-it",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "husky": {
     "hooks": {

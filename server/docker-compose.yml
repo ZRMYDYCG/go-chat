@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  # Koa 应用服务
+  llm-mini-chat-server:
+    build: .
+    container_name: llm-mini-chat-server
+    ports:
+      - "3030:3030"
+      - "3001:3001"
+    depends_on:
+      - mysql
+    networks:
+      - llm-mini-chat-network
+
+  # MySQL 数据库服务
+  mysql:
+    image: mysql
+    container_name: llm-mini-chat-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=go_chat
+    ports:
+      - "3307:3306"
+    volumes:
+      - llm-mysql-data:/var/lib/mysql # 持久化 MySQL 数据
+    networks:
+      - llm-mini-chat-network
+
+# 定义卷
+volumes:
+  llm-mysql-data:
+
+# 定义网络
+networks:
+  llm-mini-chat-network:
+    driver: bridge # 使用桥接驱动
